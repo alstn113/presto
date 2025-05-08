@@ -5,6 +5,7 @@ import com.presto.server.common.persistence.Timestamps;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,13 @@ public class Member extends IdentifiableEntity {
     public Member(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public Instant createdAt() {
+        return timestamps.getCreatedAt();
+    }
+
+    public Instant updatedAt() {
+        return timestamps.getUpdatedAt();
     }
 }
