@@ -3,7 +3,7 @@ package com.presto.server.security;
 import com.presto.server.auth.application.AuthService;
 import com.presto.server.auth.application.MemberNotFoundException;
 import com.presto.server.auth.application.TokenProvider;
-import com.presto.server.auth.application.response.MemberInfoResponse;
+import com.presto.server.auth.application.response.MemberDetailsResponse;
 import com.presto.server.auth.infra.exception.BlankTokenException;
 import com.presto.server.auth.infra.exception.InvalidTokenException;
 import com.presto.server.auth.infra.exception.TokenExpiredException;
@@ -17,7 +17,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void handleToken(String token) {
         Long memberId = extractMemberId(token);
-        MemberInfoResponse memberInfo = fetchMemberInfo(memberId);
+        MemberDetailsResponse memberInfo = fetchMemberInfo(memberId);
 
         Accessor accessor = new Accessor(memberInfo.id());
         Authentication authentication = new JwtAuthentication(accessor);
@@ -62,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             return tokenProvider.getMemberId(token);
         } catch (BlankTokenException e) {
-            throw new InsufficientAuthenticationException("토큰이 비어 있습니다.", e);
+            throw new BadCredentialsException("토큰이 비어 있습니다.", e);
         } catch (TokenExpiredException e) {
             throw new CredentialsExpiredException("토큰이 만료되었습니다.", e);
         } catch (InvalidTokenException e) {
@@ -70,11 +69,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private MemberInfoResponse fetchMemberInfo(Long memberId) {
+    private MemberDetailsResponse fetchMemberInfo(Long memberId) {
         try {
-            return authService.getMember(memberId);
+            return authService.getMemberDetails(memberId);
         } catch (MemberNotFoundException e) {
-            throw new BadCredentialsException("토큰에 해당하는 회원을 찾을 수 없습니다.", e);
+            throw new BadCredentialsException("토큰에 해당하는 사용자를 찾을 수 없습니다.", e);
         }
     }
 }

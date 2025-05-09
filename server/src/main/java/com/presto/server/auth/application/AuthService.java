@@ -2,7 +2,7 @@ package com.presto.server.auth.application;
 
 import com.presto.server.auth.application.request.LoginRequest;
 import com.presto.server.auth.application.request.RegisterRequest;
-import com.presto.server.auth.application.response.MemberInfoResponse;
+import com.presto.server.auth.application.response.MemberDetailsResponse;
 import com.presto.server.auth.application.response.TokenResponse;
 import com.presto.server.member.domain.Member;
 import com.presto.server.member.domain.MemberRepository;
@@ -20,10 +20,10 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     @Transactional(readOnly = true)
-    public MemberInfoResponse getMember(Long id) {
+    public MemberDetailsResponse getMemberDetails(Long id) {
         Member member = getById(id);
 
-        return new MemberInfoResponse(member.getId(), member.getUsername(), member.getCreatedAt());
+        return new MemberDetailsResponse(member.getId(), member.getUsername(), member.getCreatedAt());
     }
 
     @Transactional(readOnly = true)

@@ -1,6 +1,6 @@
 package com.presto.server.member.ui;
 
-import com.presto.server.auth.application.response.MemberInfoResponse;
+import com.presto.server.auth.application.response.MemberDetailsResponse;
 import com.presto.server.member.application.MemberService;
 import com.presto.server.security.Accessor;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,8 @@ public class MemberV1Controller {
     private final MemberService memberService;
 
     @GetMapping("/api/v1/members/me")
-    public ResponseEntity<MemberInfoResponse> getMyInfo(@AuthenticationPrincipal Accessor accessor) {
-        MemberInfoResponse response = memberService.getMemberInfo(accessor.id());
+    public ResponseEntity<MemberDetailsResponse> getMyInfo(@AuthenticationPrincipal Accessor accessor) {
+        MemberDetailsResponse response = memberService.getMemberInfo(accessor.id());
 
         return ResponseEntity.ok(response);
     }
