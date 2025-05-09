@@ -1,26 +1,20 @@
 package com.presto.server.security;
 
-import java.util.Objects;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 public class JwtAuthentication extends AbstractAuthenticationToken {
 
-    private final Long memberId;
+    private final Accessor accessor;
 
-    public JwtAuthentication(Long memberId) {
+    public JwtAuthentication(Accessor accessor) {
         super(null);
-        this.memberId = memberId;
+        this.accessor = accessor;
         setAuthenticated(true);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), memberId);
-    }
-
-    @Override
-    public Object getPrincipal() {
-        return memberId;
+    public Accessor getPrincipal() {
+        return accessor;
     }
 
     @Override

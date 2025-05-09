@@ -46,13 +46,17 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
+                .anonymous(it -> it.principal(Accessor.GUEST))
                 .sessionManagement(it -> it
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(it -> it
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(it -> it
-                        .requestMatchers("/api/v1/auth/login", "/api/vi/auth/register").permitAll()
+                        .requestMatchers(
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/register"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
