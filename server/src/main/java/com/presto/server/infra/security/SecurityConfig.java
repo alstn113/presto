@@ -50,7 +50,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(it -> it
                         .requestMatchers(
                                 "/api/v1/auth/login",
-                                "/api/v1/auth/register"
+                                "/api/v1/auth/register",
+                                "/ws/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(it -> it

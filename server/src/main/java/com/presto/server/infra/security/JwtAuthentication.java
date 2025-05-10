@@ -6,7 +6,15 @@ public class JwtAuthentication extends AbstractAuthenticationToken {
 
     private final Accessor accessor;
 
-    public JwtAuthentication(Accessor accessor) {
+    public static JwtAuthentication ofGuest() {
+        return new JwtAuthentication(Accessor.GUEST);
+    }
+
+    public static JwtAuthentication of(Long memberId) {
+        return new JwtAuthentication(new Accessor(memberId));
+    }
+
+    private JwtAuthentication(Accessor accessor) {
         super(null);
         this.accessor = accessor;
         setAuthenticated(true);
