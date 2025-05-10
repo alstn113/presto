@@ -1,8 +1,10 @@
 package com.presto.server.application.member;
 
-import com.presto.server.application.auth.response.MemberDetailsResponse;
+import com.presto.server.application.member.response.MemberInfoResponse;
 import com.presto.server.domain.member.Member;
 import com.presto.server.domain.member.MemberRepository;
+import com.presto.server.support.error.CoreException;
+import com.presto.server.support.error.ErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +16,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public MemberDetailsResponse getMemberInfo(Long id) {
+    public MemberInfoResponse getMemberInfo(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+                .orElseThrow(() -> new CoreException(ErrorType.MEMBER_NOT_FOUND));
 
-        return new MemberDetailsResponse(member.getId(), member.getUsername(), member.getCreatedAt());
-
+        return new MemberInfoResponse(
+                member.getId(),
+                member.getUsername(),
+                member.getCreatedAt()
+        );
     }
 }
