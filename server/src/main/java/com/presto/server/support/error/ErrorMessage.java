@@ -10,11 +10,11 @@ public class ErrorMessage {
     private final Object data;
 
     public ErrorMessage(ErrorType errorType) {
-        this(errorType.getCode().name(), errorType.getMessage(), null);
+        this(errorType.name(), errorType.getMessage(), null);
     }
 
     public ErrorMessage(ErrorType errorType, Object data) {
-        this(errorType.getCode().name(), errorType.getMessage(), data);
+        this(errorType.name(), errorType.getMessage(), data);
     }
 
     private ErrorMessage(String code, String message, Object data) {

@@ -1,7 +1,7 @@
 package com.presto.server.infra.security;
 
 import com.presto.server.application.auth.AuthService;
-import com.presto.server.application.auth.MemberNotFoundException;
+import com.presto.server.application.auth.exception.MemberNotFoundException;
 import com.presto.server.application.auth.TokenProvider;
 import com.presto.server.application.auth.response.MemberDetailsResponse;
 import com.presto.server.infra.security.jwt.exception.BlankTokenException;
