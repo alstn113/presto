@@ -5,9 +5,9 @@ import com.presto.server.application.chat.room.ChatRoomService;
 import com.presto.server.application.chat.room.request.AvailableChatRoomPreviewsQuery;
 import com.presto.server.application.chat.room.request.JoinChatRoomRequest;
 import com.presto.server.application.chat.room.request.LeaveChatRoomRequest;
-import com.presto.server.application.chat.room.request.MyChatRoomPreviewsQuery;
+import com.presto.server.application.chat.room.request.JoinedChatRoomPreviewsQuery;
 import com.presto.server.domain.chat.room.dto.AvailableChatRoomPreviewDto;
-import com.presto.server.domain.chat.room.dto.MyChatRoomPreviewDto;
+import com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto;
 import com.presto.server.infra.security.Accessor;
 import com.presto.server.support.response.ApiResponse;
 import java.util.List;
@@ -27,11 +27,11 @@ public class ChatRoomController {
     private final ChatRoomQueryService chatRoomQueryService;
 
     @GetMapping("/api/v1/chat-rooms")
-    public ResponseEntity<ApiResponse<List<MyChatRoomPreviewDto>>> getMyChatRoomPreviews(
+    public ResponseEntity<ApiResponse<List<JoinedChatRoomPreviewDto>>> getJoinedChatRoomPreviews(
             @AuthenticationPrincipal Accessor accessor
     ) {
-        MyChatRoomPreviewsQuery request = new MyChatRoomPreviewsQuery(accessor);
-        List<MyChatRoomPreviewDto> responses = chatRoomQueryService.getMyChatRoomPreviews(request);
+        JoinedChatRoomPreviewsQuery request = new JoinedChatRoomPreviewsQuery(accessor);
+        List<JoinedChatRoomPreviewDto> responses = chatRoomQueryService.getJoinedChatRoomPreviews(request);
 
         return ResponseEntity.ok(ApiResponse.success(responses));
     }

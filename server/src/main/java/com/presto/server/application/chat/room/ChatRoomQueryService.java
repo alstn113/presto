@@ -1,10 +1,10 @@
 package com.presto.server.application.chat.room;
 
 import com.presto.server.application.chat.room.request.AvailableChatRoomPreviewsQuery;
-import com.presto.server.application.chat.room.request.MyChatRoomPreviewsQuery;
-import com.presto.server.domain.chat.room.dto.AvailableChatRoomPreviewDto;
-import com.presto.server.domain.chat.room.dto.MyChatRoomPreviewDto;
+import com.presto.server.application.chat.room.request.JoinedChatRoomPreviewsQuery;
 import com.presto.server.domain.chat.room.ChatRoomRepository;
+import com.presto.server.domain.chat.room.dto.AvailableChatRoomPreviewDto;
+import com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,9 @@ public class ChatRoomQueryService {
     private final ChatRoomRepository chatRoomRepository;
 
     @Transactional(readOnly = true)
-    public List<MyChatRoomPreviewDto> getMyChatRoomPreviews(MyChatRoomPreviewsQuery query) {
+    public List<JoinedChatRoomPreviewDto> getJoinedChatRoomPreviews(JoinedChatRoomPreviewsQuery query) {
         Long memberId = query.accessor().id();
-        return chatRoomRepository.findMyChatRoomPreviews(memberId);
+        return chatRoomRepository.findJoinedChatRoomPreviews(memberId);
     }
 
     @Transactional(readOnly = true)

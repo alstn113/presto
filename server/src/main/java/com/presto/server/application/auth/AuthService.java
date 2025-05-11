@@ -44,14 +44,16 @@ public class AuthService {
     }
 
     @Transactional
-    public void register(RegisterRequest request) {
+    public Long register(RegisterRequest request) {
         if (memberRepository.existsByUsername(request.username())) {
             throw new CoreException(ErrorType.MEMBER_USERNAME_ALREADY_EXISTS);
         }
 
         String encodedPassword = passwordEncoder.encode(request.password());
         Member member = new Member(request.username(), encodedPassword);
-        memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
+
+        return savedMember.getId();
     }
 
     private Member getByUsername(String username) {

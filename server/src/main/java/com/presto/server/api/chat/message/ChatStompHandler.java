@@ -7,6 +7,7 @@ import com.presto.server.application.chat.message.TypingService;
 import com.presto.server.application.chat.message.request.ChatMessageRequest;
 import com.presto.server.application.chat.message.request.TypingStatusRequest;
 import com.presto.server.infra.security.Accessor;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -29,4 +29,9 @@ public class JwtAuthentication extends AbstractAuthenticationToken {
     public Object getCredentials() {
         return null;
     }
+
+    @Override
+    public String getName() {
+        return accessor.id().toString();
+    }
 }

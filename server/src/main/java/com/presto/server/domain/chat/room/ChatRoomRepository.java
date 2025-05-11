@@ -1,7 +1,7 @@
 package com.presto.server.domain.chat.room;
 
 import com.presto.server.domain.chat.room.dto.AvailableChatRoomPreviewDto;
-import com.presto.server.domain.chat.room.dto.MyChatRoomPreviewDto;
+import com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     @Query("""
-            select new com.presto.server.domain.chat.room.dto.MyChatRoomPreviewDto(
+            select new com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto(
                 cr.id,
                 cr.name,
                 cm.content,
@@ -26,7 +26,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
               )
             order by cm.createdAt desc nulls last
             """)
-    List<MyChatRoomPreviewDto> findMyChatRoomPreviews(Long memberId);
+    List<JoinedChatRoomPreviewDto> findJoinedChatRoomPreviews(Long memberId);
 
     @Query("""
             select new com.presto.server.domain.chat.room.dto.AvailableChatRoomPreviewDto(
