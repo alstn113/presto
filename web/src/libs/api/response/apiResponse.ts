@@ -5,7 +5,7 @@ export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
 export interface SuccessResponse<T> {
   result: typeof ResultType.SUCCESS;
-  data: T | null;
+  data: T;
   error: null;
   timestamp: string;
 }

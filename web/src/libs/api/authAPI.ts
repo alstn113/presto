@@ -24,12 +24,12 @@ export const AuthAPI = {
   },
 };
 
-interface LoginRequest {
+export interface LoginRequest {
   username: string;
   password: string;
 }
 
-interface RegisterRequest {
+export interface RegisterRequest {
   username: string;
   password: string;
 }
