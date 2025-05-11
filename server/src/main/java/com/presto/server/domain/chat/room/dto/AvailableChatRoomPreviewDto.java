@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public record AvailableChatRoomPreviewDto(
         Long chatRoomId,
-        String name,
+        String chatRoomName,
         Instant createdAt
 ) {
 }

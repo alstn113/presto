@@ -2,6 +2,7 @@ package com.presto.server.infra.persistence;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.time.Instant;
@@ -9,8 +10,10 @@ import java.util.Objects;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 public abstract class BaseEntity {
 

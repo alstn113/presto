@@ -26,7 +26,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final ChatRoomQueryService chatRoomQueryService;
 
-    @GetMapping("/api/v1/chat-rooms")
+    @GetMapping("/api/v1/chat-rooms/joined")
     public ResponseEntity<ApiResponse<List<JoinedChatRoomPreviewDto>>> getJoinedChatRoomPreviews(
             @AuthenticationPrincipal Accessor accessor
     ) {

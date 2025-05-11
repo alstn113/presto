@@ -1,8 +1,8 @@
 package com.presto.server.infra.security;
 
 import com.presto.server.application.auth.AuthService;
-import com.presto.server.application.auth.exception.MemberNotFoundException;
 import com.presto.server.application.auth.TokenProvider;
+import com.presto.server.application.auth.exception.MemberNotFoundException;
 import com.presto.server.application.auth.response.MemberDetailsResponse;
 import com.presto.server.infra.security.jwt.exception.BlankTokenException;
 import com.presto.server.infra.security.jwt.exception.InvalidTokenException;
@@ -52,8 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Long memberId = extractMemberId(token);
         MemberDetailsResponse memberInfo = fetchMemberInfo(memberId);
 
-        Accessor accessor = new Accessor(memberInfo.id());
-        Authentication authentication = new JwtAuthentication(accessor);
+        Authentication authentication = JwtAuthentication.of(memberInfo.id());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
