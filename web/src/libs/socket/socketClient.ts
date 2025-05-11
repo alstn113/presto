@@ -1,6 +1,6 @@
 import { Client, type StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { BASE_URL } from '../../constants';
+import { SOCKET_URL } from '../../constants';
 
 interface Subscriptions {
   [topic: string]: StompSubscription;
@@ -27,7 +27,7 @@ class SocketClient {
   public static getInstance(): SocketClient {
     if (!SocketClient.instance) {
       SocketClient.instance = new SocketClient({
-        url: `${BASE_URL}/ws`,
+        url: SOCKET_URL,
       });
     }
 

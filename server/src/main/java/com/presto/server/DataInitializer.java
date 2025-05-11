@@ -22,8 +22,8 @@ public class DataInitializer implements ApplicationRunner {
     @Override
     @jakarta.transaction.Transactional
     public void run(ApplicationArguments args) {
-        Long catMemberId = authService.register(new RegisterRequest("cat", "123"));
-        Long dogMemberId = authService.register(new RegisterRequest("dog", "123"));
+        String catMemberId = authService.register(new RegisterRequest("cat", "123"));
+        String dogMemberId = authService.register(new RegisterRequest("dog", "123"));
 
         chatRoomRepository.save(new ChatRoom("대화방", RoomType.PUBLIC, catMemberId));
         chatRoomRepository.save(new ChatRoom("공지사항", RoomType.PUBLIC, catMemberId));

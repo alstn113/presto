@@ -5,6 +5,8 @@ export interface ErrorMessage {
 }
 
 export const ErrorCode = {
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR',
+
   INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
   UNAUTHORIZED: 'UNAUTHORIZED',
   FORBIDDEN: 'FORBIDDEN',

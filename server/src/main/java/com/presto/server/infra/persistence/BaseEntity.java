@@ -20,7 +20,7 @@ public abstract class BaseEntity {
     @Id
     @Tsid
     @Column(nullable = false)
-    private Long id;
+    private String id;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

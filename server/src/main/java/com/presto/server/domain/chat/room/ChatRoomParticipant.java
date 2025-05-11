@@ -16,15 +16,15 @@ import lombok.NoArgsConstructor;
 public class ChatRoomParticipant extends BaseEntity {
 
     @Column(nullable = false)
-    private Long chatRoomId;
+    private String chatRoomId;
 
     @Column(nullable = false)
-    private Long memberId;
+    private String memberId;
 
     @Column
-    private Long lastReadMessageId;
+    private String lastReadMessageId;
 
-    public ChatRoomParticipant(Long chatRoomId, Long memberId) {
+    public ChatRoomParticipant(String chatRoomId, String memberId) {
         this.chatRoomId = chatRoomId;
         this.memberId = memberId;
         this.lastReadMessageId = null;

@@ -49,14 +49,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void handleToken(String token) {
-        Long memberId = extractMemberId(token);
+        String memberId = extractMemberId(token);
         MemberDetailsResponse memberInfo = fetchMemberInfo(memberId);
 
         Authentication authentication = JwtAuthentication.of(memberInfo.id());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private Long extractMemberId(String token) {
+    private String extractMemberId(String token) {
         try {
             return tokenProvider.getMemberId(token);
         } catch (BlankTokenException e) {
@@ -68,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private MemberDetailsResponse fetchMemberInfo(Long memberId) {
+    private MemberDetailsResponse fetchMemberInfo(String memberId) {
         try {
             return authService.getMemberDetails(memberId);
         } catch (MemberNotFoundException e) {

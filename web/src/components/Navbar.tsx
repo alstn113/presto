@@ -21,7 +21,7 @@ const Navbar = () => {
           <Link to="/" className="hover:text-gray-300">
             홈
           </Link>
-          <Link to="/dashboard" className="hover:text-gray-300">
+          <Link to="/playground" className="hover:text-gray-300">
             대시보드
           </Link>
 

@@ -16,7 +16,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public MemberInfoResponse getMemberInfo(Long id) {
+    public MemberInfoResponse getMemberInfo(String id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CoreException(ErrorType.MEMBER_NOT_FOUND));
 

@@ -26,22 +26,22 @@ public class JwtTokenProvider implements TokenProvider {
         this.expirationTime = properties.expirationTime();
     }
 
-    public String createToken(Long memberId) {
+    public String createToken(String memberId) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationTime);
 
         return Jwts.builder()
-                .subject(memberId.toString())
+                .subject(memberId)
                 .issuedAt(now)
                 .expiration(expiration)
                 .signWith(key)
                 .compact();
     }
 
-    public Long getMemberId(String token) {
+    public String getMemberId(String token) {
         Claims claims = toClaims(token);
 
-        return Long.valueOf(claims.getSubject());
+        return claims.getSubject();
     }
 
     private Claims toClaims(String token) {

@@ -2,7 +2,7 @@ package com.presto.server.application.auth;
 
 public interface TokenProvider {
 
-    String createToken(Long memberId);
+    String createToken(String memberId);
 
-    Long getMemberId(String token);
+    String getMemberId(String token);
 }

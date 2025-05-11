@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ChatRoomParticipantRepository extends JpaRepository<ChatRoomParticipant, Long> {
+public interface ChatRoomParticipantRepository extends JpaRepository<ChatRoomParticipant, String> {
 
-    Optional<ChatRoomParticipant> findByChatRoomIdAndMemberId(Long chatRoomId, Long memberId);
+    Optional<ChatRoomParticipant> findByChatRoomIdAndMemberId(String chatRoomId, String memberId);
 
-    List<ChatRoomParticipant> findByChatRoomId(Long chatRoomId);
+    List<ChatRoomParticipant> findByChatRoomId(String chatRoomId);
 }

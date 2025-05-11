@@ -1,26 +1,28 @@
 import { apiV1Client } from './apiClient';
+import { handleAPIResponse } from './apiUtils';
 import type { ApiResponse } from './response/apiResponse';
 
 export const AuthAPI = {
   login: async (request: LoginRequest) => {
-    const response = await apiV1Client.post<ApiResponse<void>>(
-      '/auth/login',
-      request
+    const response = await handleAPIResponse(() =>
+      apiV1Client.post<ApiResponse<void>>('/auth/login', request)
     );
-    return response.data;
+
+    return response;
   },
 
   register: async (request: RegisterRequest) => {
-    const response = await apiV1Client.post<ApiResponse<void>>(
-      '/auth/register',
-      request
+    const response = await handleAPIResponse(() =>
+      apiV1Client.post<ApiResponse<void>>('/auth/register', request)
     );
-    return response.data;
+    return response;
   },
 
   logout: async () => {
-    const response = await apiV1Client.post<ApiResponse<void>>('/auth/logout');
-    return response.data;
+    const response = await handleAPIResponse(() =>
+      apiV1Client.post<ApiResponse<void>>('/auth/logout')
+    );
+    return response;
   },
 };
 

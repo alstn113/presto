@@ -10,7 +10,7 @@ public class JwtAuthentication extends AbstractAuthenticationToken {
         return new JwtAuthentication(Accessor.GUEST);
     }
 
-    public static JwtAuthentication of(Long memberId) {
+    public static JwtAuthentication of(String memberId) {
         return new JwtAuthentication(new Accessor(memberId));
     }
 

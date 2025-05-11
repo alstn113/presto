@@ -3,7 +3,11 @@ import { useMyInfoQuery } from './hooks/auth/useAuth';
 import { router } from './pages/routes/router';
 
 function App() {
-  useMyInfoQuery();
+  const { isLoading } = useMyInfoQuery();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return <RouterProvider router={router} />;
 }

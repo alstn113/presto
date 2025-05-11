@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 public class ChatMessage extends BaseEntity {
 
     @Column(nullable = false)
-    private Long chatRoomId;
+    private String chatRoomId;
 
     @Column(nullable = false)
-    private Long senderId;
+    private String senderId;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -28,8 +28,8 @@ public class ChatMessage extends BaseEntity {
     private String content;
 
     public ChatMessage(
-            Long chatRoomId,
-            Long senderId,
+            String chatRoomId,
+            String senderId,
             MessageType type,
             String content
     ) {

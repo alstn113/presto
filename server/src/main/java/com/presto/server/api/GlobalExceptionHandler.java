@@ -16,24 +16,24 @@ public class GlobalExceptionHandler {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @ExceptionHandler(CoreException.class)
-    public ResponseEntity<ApiResponse<?>> handleCoreException(CoreException e) {
+    public ResponseEntity<ApiResponse<Void>> handleCoreException(CoreException e) {
         switch (e.getErrorType().getLogLevel()) {
             case ERROR -> log.error("CoreException : {}", e.getMessage(), e);
             case WARN -> log.warn("CoreException : {}", e.getMessage(), e);
             default -> log.info("CoreException : {}", e.getMessage(), e);
         }
 
-        ApiResponse<?> response = ApiResponse.error(e.getErrorType(), e.getData());
+        ApiResponse<Void> response = ApiResponse.error(e.getErrorType(), e.getData());
         HttpStatus status = e.getErrorType().getStatus();
         return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
         log.error("Exception : {}", e.getMessage(), e);
 
         ErrorType errorType = ErrorType.INTERNAL_SERVER_ERROR;
-        ApiResponse<?> response = ApiResponse.error(errorType);
+        ApiResponse<Void> response = ApiResponse.error(errorType);
         HttpStatus status = errorType.getStatus();
         return new ResponseEntity<>(response, status);
     }

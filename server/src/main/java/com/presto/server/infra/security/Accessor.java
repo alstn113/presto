@@ -1,8 +1,8 @@
 package com.presto.server.infra.security;
 
-public record Accessor(Long id) {
+public record Accessor(String id) {
 
-    private static final Long GUEST_ID = -1L;
+    private static final String GUEST_ID = "GUEST";
     public static final Accessor GUEST = new Accessor(GUEST_ID);
 
     public boolean isGuest() {

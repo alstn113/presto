@@ -12,11 +12,12 @@ export const useMyInfoQuery = () => {
   return useQuery({
     queryKey: [MY_INFO_QUERY_KEY],
     queryFn: async () => {
-      const res = await MemberAPI.getMyInfo();
-      if (res.result === 'SUCCESS') {
-        setAuth(res.data);
-        return res.data;
-      } else {
+      try {
+        const memberInfo = await MemberAPI.getMyInfo();
+        setAuth(memberInfo);
+        return memberInfo;
+      } catch (error) {
+        console.error('Error fetching member info:', error);
         clearAuth();
       }
     },

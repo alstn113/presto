@@ -3,8 +3,8 @@ package com.presto.server.api.chat.message.request;
 import com.presto.server.application.chat.message.request.TypingStatusRequest;
 import com.presto.server.infra.security.Accessor;
 
-public record TypingStatusUpdateWebRequest(
-        Long chatRoomId,
+public record TypingStatusChangeWebRequest(
+        String chatRoomId,
         Boolean isTyping
 ) {
 

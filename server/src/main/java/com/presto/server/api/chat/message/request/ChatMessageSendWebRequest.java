@@ -4,7 +4,7 @@ import com.presto.server.application.chat.message.request.ChatMessageRequest;
 import com.presto.server.infra.security.Accessor;
 
 public record ChatMessageSendWebRequest(
-        Long chatRoomId,
+        String chatRoomId,
         String content
 ) {
 

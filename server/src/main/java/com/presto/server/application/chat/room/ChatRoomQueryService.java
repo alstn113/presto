@@ -18,13 +18,13 @@ public class ChatRoomQueryService {
 
     @Transactional(readOnly = true)
     public List<JoinedChatRoomPreviewDto> getJoinedChatRoomPreviews(JoinedChatRoomPreviewsQuery query) {
-        Long memberId = query.accessor().id();
+        String memberId = query.accessor().id();
         return chatRoomRepository.findJoinedChatRoomPreviews(memberId);
     }
 
     @Transactional(readOnly = true)
     public List<AvailableChatRoomPreviewDto> getAvailableChatRoomPreviews(AvailableChatRoomPreviewsQuery query) {
-        Long memberId = query.accessor().id();
+        String memberId = query.accessor().id();
         return chatRoomRepository.findAvailableChatRoomPreviews(memberId);
     }
 }

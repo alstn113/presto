@@ -1,5 +1,10 @@
 export interface User {
-  id: number;
+  id: string;
   username: string;
   createdAt: string;
+}
+
+export interface ChatRoom {
+  id: string;
+  name: string;
 }

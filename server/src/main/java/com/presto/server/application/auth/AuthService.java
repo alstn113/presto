@@ -23,10 +23,10 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     @Transactional(readOnly = true)
-    public MemberDetailsResponse getMemberDetails(Long id) {
+    public MemberDetailsResponse getMemberDetails(String id) {
         Member member = memberRepository
                 .findById(id)
-                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다. 사용자 식별자: %d".formatted(id)));
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다. 사용자 식별자: %s".formatted(id)));
 
         return new MemberDetailsResponse(member.getId(), member.getUsername(), member.getCreatedAt());
     }
@@ -44,7 +44,7 @@ public class AuthService {
     }
 
     @Transactional
-    public Long register(RegisterRequest request) {
+    public String register(RegisterRequest request) {
         if (memberRepository.existsByUsername(request.username())) {
             throw new CoreException(ErrorType.MEMBER_USERNAME_ALREADY_EXISTS);
         }

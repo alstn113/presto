@@ -1,13 +1,13 @@
 package com.presto.server.application.chat.message.response;
 
-public record TypingStatusEvent(
-        Long chatRoomId,
+public record TypingStatusChangedEvent(
+        String chatRoomId,
         Sender sender,
         boolean isTyping
 ) {
 
     public record Sender(
-            Long id,
+            String senderId,
             String username
     ) {
     }

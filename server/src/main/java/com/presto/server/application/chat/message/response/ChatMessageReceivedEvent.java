@@ -4,7 +4,7 @@ import com.presto.server.domain.chat.message.MessageType;
 import java.time.Instant;
 
 public record ChatMessageReceivedEvent(
-        Long messageId,
+        String messageId,
         String content,
         MessageType messageType,
         Sender sender,
@@ -12,7 +12,7 @@ public record ChatMessageReceivedEvent(
 ) {
 
     public record Sender(
-            Long senderId,
+            String senderId,
             String username
     ) {
     }

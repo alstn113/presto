@@ -56,7 +56,7 @@ public class ChatService {
                 new Sender(member.getId(), member.getUsername()),
                 chatMessage.getCreatedAt()
         );
-        String destination = "/topic/chat/%d".formatted(chatRoom.getId());
+        String destination = "/topic/chat/%s".formatted(chatRoom.getId());
         messagingTemplate.convertAndSend(destination, event);
     }
 
@@ -69,17 +69,17 @@ public class ChatService {
                 chatMessage.getCreatedAt()
         );
         participants.forEach(it -> {
-            String destination = "/user/%d/chat-rooms/joined".formatted(it.getMemberId());
-            messagingTemplate.convertAndSendToUser(it.getMemberId().toString(), destination, event);
+            String destination = "/queue/chat-rooms/joined";
+            messagingTemplate.convertAndSendToUser(it.getMemberId(), destination, event);
         });
     }
 
-    private Member findMemberById(Long memberId) {
+    private Member findMemberById(String memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new CoreException(ErrorType.MEMBER_NOT_FOUND));
     }
 
-    private ChatRoom findChatRoomById(Long chatRoomId) {
+    private ChatRoom findChatRoomById(String chatRoomId) {
         return chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new CoreException(ErrorType.CHAT_ROOM_NOT_FOUND));
     }

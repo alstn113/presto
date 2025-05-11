@@ -22,9 +22,9 @@ public class ChatRoom extends BaseEntity {
     private RoomType type;
 
     @Column(nullable = false)
-    private Long ownerId;
+    private String ownerId;
 
-    public ChatRoom(String name, RoomType type, Long ownerId) {
+    public ChatRoom(String name, RoomType type, String ownerId) {
         this.name = name;
         this.type = type;
         this.ownerId = ownerId;

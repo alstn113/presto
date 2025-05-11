@@ -6,27 +6,26 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
     @Query("""
-            select new com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto(
+            SELECT new com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto(
                 cr.id,
                 cr.name,
                 cm.content,
                 cm.createdAt
             )
-            from ChatRoomParticipant crp
-            join ChatRoom cr on crp.chatRoomId = cr.id
-            left join ChatMessage cm on cr.id = cm.chatRoomId
-            where crp.memberId = :memberId
-              and cm.createdAt = (
-                  select max(sub.createdAt)
-                  from ChatMessage sub
-                  where sub.chatRoomId = cr.id
-              )
-            order by cm.createdAt desc nulls last
+            FROM ChatRoomParticipant crp
+            JOIN ChatRoom cr ON crp.chatRoomId = cr.id
+            LEFT JOIN ChatMessage cm ON cm.chatRoomId = cr.id AND cm.createdAt = (
+                SELECT MAX(cm2.createdAt)
+                FROM ChatMessage cm2
+                WHERE cm2.chatRoomId = cr.id
+            )
+            WHERE crp.memberId = :memberId
+            ORDER BY cm.createdAt DESC NULLS LAST
             """)
-    List<JoinedChatRoomPreviewDto> findJoinedChatRoomPreviews(Long memberId);
+    List<JoinedChatRoomPreviewDto> findJoinedChatRoomPreviews(String memberId);
 
     @Query("""
             select new com.presto.server.domain.chat.room.dto.AvailableChatRoomPreviewDto(
@@ -35,8 +34,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
                 cr.createdAt
             )
             from ChatRoom cr
-            left join ChatRoomParticipant cp on cr.id = cp.chatRoomId and cp.memberId = :id
+            left join ChatRoomParticipant cp on cr.id = cp.chatRoomId and cp.memberId = :memberId
             where cp.memberId is null
             """)
-    List<AvailableChatRoomPreviewDto> findAvailableChatRoomPreviews(Long memberId);
+    List<AvailableChatRoomPreviewDto> findAvailableChatRoomPreviews(String memberId);
 }

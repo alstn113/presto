@@ -47,8 +47,8 @@ public class ChatRoomController {
     }
 
     @PostMapping("/api/v1/chat-rooms/{chatRoomId}/join")
-    public ResponseEntity<ApiResponse<?>> joinChatRoom(
-            @PathVariable Long chatRoomId,
+    public ResponseEntity<ApiResponse<Void>> joinChatRoom(
+            @PathVariable String chatRoomId,
             @AuthenticationPrincipal Accessor accessor
     ) {
         JoinChatRoomRequest request = new JoinChatRoomRequest(chatRoomId, accessor);
@@ -58,8 +58,8 @@ public class ChatRoomController {
     }
 
     @PostMapping("/api/v1/chat-rooms/{chatRoomId}/leave")
-    public ResponseEntity<ApiResponse<?>> leaveChatRoom(
-            @PathVariable Long chatRoomId,
+    public ResponseEntity<ApiResponse<Void>> leaveChatRoom(
+            @PathVariable String chatRoomId,
             @AuthenticationPrincipal Accessor accessor
     ) {
         LeaveChatRoomRequest request = new LeaveChatRoomRequest(chatRoomId, accessor);
