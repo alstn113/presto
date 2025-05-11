@@ -16,6 +16,7 @@ public enum ErrorType {
     MEMBER_PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.", LogLevel.WARN),
 
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다.", LogLevel.WARN),
+    CHAT_ROOM_PARTICIPANT_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅방 참가자가 아닙니다.", LogLevel.WARN),
     ;
 
     private final HttpStatus status;
@@ -27,4 +28,4 @@ public enum ErrorType {
         this.message = message;
         this.logLevel = logLevel;
     }
-}
+    }

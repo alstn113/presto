@@ -6,7 +6,6 @@ import com.presto.server.application.chat.message.response.ChatMessageReceivedEv
 import com.presto.server.domain.chat.message.ChatMessage;
 import com.presto.server.domain.chat.message.ChatMessageRepository;
 import com.presto.server.domain.chat.message.MessageType;
-import com.presto.server.domain.chat.room.ChatParticipantRepository;
 import com.presto.server.domain.chat.room.ChatRoom;
 import com.presto.server.domain.chat.room.ChatRoomRepository;
 import com.presto.server.domain.member.Member;
