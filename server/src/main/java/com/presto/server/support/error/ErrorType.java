@@ -28,4 +28,4 @@ public enum ErrorType {
         this.message = message;
         this.logLevel = logLevel;
     }
-    }
+}

@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ChatService {
+public class ChatMessageService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomParticipantRepository chatRoomParticipantRepository;
@@ -56,8 +56,8 @@ public class ChatService {
                 new Sender(member.getId(), member.getUsername()),
                 chatMessage.getCreatedAt()
         );
-        String destination = "/topic/chat/%s".formatted(chatRoom.getId());
-        messagingTemplate.convertAndSend(destination, event);
+        String destination = "/topic/chat/%s".formatted(chatRoom.getId()); 
+        messagingTemplate.convertAndSend(destination, event); 
     }
 
     private void sendChatRoomPreviewUpdatedEvent(ChatRoom chatRoom, ChatMessage chatMessage) {

@@ -4,11 +4,11 @@ import com.presto.server.domain.chat.message.MessageType;
 import java.time.Instant;
 
 public record ChatMessageReceivedEvent(
-        String messageId,
+        String id,
         String content,
         MessageType messageType,
         Sender sender,
-        Instant sendAt
+        Instant sentAt
 ) {
 
     public record Sender(

@@ -9,7 +9,6 @@ import com.presto.server.support.error.CoreException;
 import com.presto.server.support.error.ErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
