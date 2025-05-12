@@ -9,21 +9,25 @@ import org.springframework.data.jpa.repository.Query;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
     @Query("""
-            SELECT new com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto(
-                cr.id,
-                cr.name,
-                cm.content,
-                cm.createdAt
-            )
-            FROM ChatRoomParticipant crp
-            JOIN ChatRoom cr ON crp.chatRoomId = cr.id
-            LEFT JOIN ChatMessage cm ON cm.chatRoomId = cr.id AND cm.createdAt = (
-                SELECT MAX(cm2.createdAt)
-                FROM ChatMessage cm2
-                WHERE cm2.chatRoomId = cr.id
-            )
-            WHERE crp.memberId = :memberId
-            ORDER BY cm.createdAt DESC NULLS LAST
+                select new com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto(
+                    cr.id,
+                    cr.name,
+                    cmLatest.content,
+                    cmLatest.createdAt,
+                    count(unreadMsg),
+                    count(roomPart)
+                )
+                from ChatRoomParticipant userPart
+                join ChatRoom cr on userPart.chatRoomId = cr.id and userPart.memberId = :memberId
+                left join ChatMessage cmLatest on cmLatest.chatRoomId = cr.id and cmLatest.createdAt = (
+                    select max(cm2.createdAt)
+                    from ChatMessage cm2
+                    where cm2.chatRoomId = cr.id
+                )
+                left join ChatMessage unreadMsg on unreadMsg.chatRoomId = cr.id and unreadMsg.id > userPart.lastReadMessageId
+                left join ChatRoomParticipant roomPart on roomPart.chatRoomId = cr.id
+                group by cr.id, cr.name, cmLatest.content, cmLatest.createdAt
+                order by cmLatest.createdAt desc nulls last
             """)
     List<JoinedChatRoomPreviewDto> findJoinedChatRoomPreviews(String memberId);
 
