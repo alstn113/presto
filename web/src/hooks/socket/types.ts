@@ -15,14 +15,14 @@ export interface TypingStatusChangeRequest {
 }
 
 export interface ChatMessageReceivedEvent {
-  messageId: string;
+  id: string;
   content: string;
   messageType: MessageType;
   sender: {
     senderId: string;
     username: string;
   };
-  sendAt: string;
+  sentAt: string;
 }
 
 export interface JoinedChatRoomPreviewUpdatedEvent {

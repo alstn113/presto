@@ -7,13 +7,13 @@ interface Props {
 
 const MessageList = ({ messages }: Props) => {
   const renderMessage = (msg: ChatMessageReceivedEvent) => {
-    const time = formatRelativeDate(msg.sendAt);
+    const time = formatRelativeDate(msg.sentAt);
 
     switch (msg.messageType) {
       case 'TEXT':
         return (
           <li
-            key={msg.messageId}
+            key={msg.id}
             className="p-2 rounded border border-gray-200 bg-white flex justify-between items-start"
           >
             <div>
@@ -31,7 +31,7 @@ const MessageList = ({ messages }: Props) => {
       case 'SYSTEM':
         return (
           <li
-            key={msg.messageId}
+            key={msg.id}
             className="text-center text-sm text-gray-500 italic py-1"
           >
             📢 {msg.content}{' '}
@@ -41,7 +41,7 @@ const MessageList = ({ messages }: Props) => {
 
       default:
         return (
-          <li key={msg.messageId} className="text-red-500">
+          <li key={msg.id} className="text-red-500">
             알 수 없는 메시지 유형입니다.
           </li>
         );
