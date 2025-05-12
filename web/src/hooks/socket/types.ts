@@ -30,6 +30,8 @@ export interface JoinedChatRoomPreviewUpdatedEvent {
   chatRoomName: string;
   lastMessageContent: string;
   lastMessageSentAt: string;
+  unreadMessageCount: number;
+  participantCount: number;
 }
 
 export interface TypingStatusChangedEvent {

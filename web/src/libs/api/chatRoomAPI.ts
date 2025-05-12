@@ -41,6 +41,8 @@ export interface JoinedChatRoomPreviewResponse {
   chatRoomName: string;
   lastMessageContent: string;
   lastMessageSentAt: string;
+  unreadMessageCount: number;
+  participantCount: number;
 }
 
 export interface AvailableChatRoomPreviewResponse {

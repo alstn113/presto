@@ -14,8 +14,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
                     cr.name,
                     cmLatest.content,
                     cmLatest.createdAt,
-                    count(unreadMsg),
-                    count(roomPart)
+                    count(distinct unreadMsg),
+                    count(distinct roomPart)
                 )
                 from ChatRoomParticipant userPart
                 join ChatRoom cr on userPart.chatRoomId = cr.id and userPart.memberId = :memberId
@@ -24,7 +24,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
                     from ChatMessage cm2
                     where cm2.chatRoomId = cr.id
                 )
-                left join ChatMessage unreadMsg on unreadMsg.chatRoomId = cr.id and unreadMsg.id > userPart.lastReadMessageId
+                left join ChatMessage unreadMsg on unreadMsg.chatRoomId = cr.id and (userPart.lastReadMessageId is null or unreadMsg.id > userPart.lastReadMessageId)
                 left join ChatRoomParticipant roomPart on roomPart.chatRoomId = cr.id
                 group by cr.id, cr.name, cmLatest.content, cmLatest.createdAt
                 order by cmLatest.createdAt desc nulls last
