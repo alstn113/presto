@@ -1,9 +1,12 @@
 import { Client, type StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { SOCKET_URL } from '../../constants';
+import { SOCKET_URL } from '../../hooks/socket/socketPaths';
 
 interface Subscriptions {
-  [topic: string]: StompSubscription;
+  [topic: string]: {
+    subscription: StompSubscription;
+    callback: (message: unknown) => void;
+  };
 }
 
 interface SubscriptionQueue {
@@ -56,7 +59,8 @@ class SocketClient {
       },
       onConnect: () => {
         console.log('✅ STOMP Connected');
-        this.flushSubscriptionQueue();
+        this.resubscribeAll(); // 재연결 시 이전 구독 목록 불러오기
+        this.flushSubscriptionQueue(); // 연결이 되지 않은 상태에서 구독 요청이 들어온 경우 연결 시 구독 처리
       },
       onStompError: (frame) => console.error('❌ STOMP Error:', frame),
     });
@@ -65,21 +69,27 @@ class SocketClient {
   }
 
   public subscribe<T>(topic: string, callback: (message: T) => void) {
-    if (!this.client?.connected) {
-      if (!this.subscriptionQueue[topic]) {
-        this.subscriptionQueue[topic] = callback as (message: unknown) => void;
-        console.log(`📝 Subscription queued for topic: ${topic}`);
-        return;
-      }
+    if (this.subscriptions[topic]) {
+      console.warn(`⚠️ Already subscribed to topic: ${topic}`);
+      return;
     }
 
-    if (!this.client) return;
-    if (this.subscriptions[topic]) return;
-    this.subscriptions[topic] = this.client.subscribe(topic, (message) => {
+    if (!this.client?.connected) {
+      console.log(`📝 Queuing subscription for topic: ${topic}`);
+      this.subscriptionQueue[topic] = callback as (message: unknown) => void;
+      return;
+    }
+
+    const stompSub = this.client.subscribe(topic, (message) => {
       if (!message.body) return;
       const parsedMessage = JSON.parse(message.body);
       callback(parsedMessage);
     });
+
+    this.subscriptions[topic] = {
+      subscription: stompSub,
+      callback: callback as (message: unknown) => void,
+    };
 
     console.log(`📥 Subscribed to topic: ${topic}`);
   }
@@ -87,8 +97,9 @@ class SocketClient {
   public unsubscribe(topic: string) {
     if (!this.client?.connected || !this.subscriptions[topic]) return;
 
-    this.subscriptions[topic].unsubscribe();
+    this.subscriptions[topic].subscription.unsubscribe();
     delete this.subscriptions[topic];
+
     console.log(`📤 Unsubscribed from topic: ${topic}`);
   }
 
@@ -122,6 +133,25 @@ class SocketClient {
     });
 
     this.subscriptionQueue = {};
+  }
+
+  private resubscribeAll() {
+    Object.entries(this.subscriptions).forEach(([topic, { callback }]) => {
+      if (!this.client) return;
+
+      const stompSub = this.client.subscribe(topic, (message) => {
+        if (!message.body) return;
+        const parsedMessage = JSON.parse(message.body);
+        callback(parsedMessage);
+      });
+
+      this.subscriptions[topic] = {
+        subscription: stompSub,
+        callback,
+      };
+
+      console.log(`♻️ Resubscribed to topic: ${topic}`);
+    });
   }
 }
 

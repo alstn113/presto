@@ -1,19 +1,18 @@
-import { useEffect } from 'react';
-import { SOCKET_PATHS } from '../../constants';
-import type { ChatMessageReceivedEvent } from './types';
-import { socketClient } from '../../libs/socket/socketClient';
+import { SOCKET_PATHS } from './socketPaths';
+import type { ChatMessageReceivedEvent, ChatMessageSendRequest } from './types';
+import useSocket from './useSocket';
 
-const useChatMessageSocket = (
+const useChatMessageSocket = <T = ChatMessageReceivedEvent>(
   chatRoomId: string,
-  onReceived: (event: ChatMessageReceivedEvent) => void
+  onReceived: (event: T) => void
 ) => {
-  useEffect(() => {
-    socketClient.subscribe(SOCKET_PATHS.CHAT.SUBSCRIBE(chatRoomId), onReceived);
+  const { send } = useSocket<ChatMessageSendRequest, T>(
+    SOCKET_PATHS.CHAT.SEND,
+    SOCKET_PATHS.CHAT.SUBSCRIBE(chatRoomId),
+    onReceived
+  );
 
-    return () => {
-      socketClient.unsubscribe(SOCKET_PATHS.CHAT.SUBSCRIBE(chatRoomId));
-    };
-  }, [chatRoomId]);
+  return { sendChatMessage: send };
 };
 
 export default useChatMessageSocket;

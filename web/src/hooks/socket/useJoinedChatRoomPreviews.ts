@@ -1,21 +1,18 @@
-import { useEffect } from 'react';
-import { SOCKET_PATHS } from '../../constants';
-import { socketClient } from '../../libs/socket/socketClient';
-import type { JoinedChatRoomPreviewUpdatedEvent } from './types';
+import { SOCKET_PATHS } from './socketPaths';
+import type {
+  TypingStatusChangedEvent,
+  TypingStatusChangeRequest,
+} from './types';
+import useSocket from './useSocket';
 
-const useJoinedChatRoomPreviewSocket = (
-  onMessageReceived: (event: JoinedChatRoomPreviewUpdatedEvent) => void
+const useJoinedChatRoomPreviewSocket = <T = TypingStatusChangedEvent>(
+  onReceived: (event: T) => void
 ) => {
-  useEffect(() => {
-    socketClient.subscribe<JoinedChatRoomPreviewUpdatedEvent>(
-      SOCKET_PATHS.JOINED_CHAT_ROOM_PREVIEW.SUBSCRIBE,
-      onMessageReceived
-    );
-
-    return () => {
-      socketClient.unsubscribe(SOCKET_PATHS.JOINED_CHAT_ROOM_PREVIEW.SUBSCRIBE);
-    };
-  }, []);
+  useSocket<TypingStatusChangeRequest, T>(
+    '',
+    SOCKET_PATHS.JOINED_CHAT_ROOM_PREVIEW.SUBSCRIBE,
+    onReceived
+  );
 };
 
 export default useJoinedChatRoomPreviewSocket;
