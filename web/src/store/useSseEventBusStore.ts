@@ -33,24 +33,29 @@ type Actions = {
   clear: () => void;
 };
 
-const initialState: States = {
-  listeners: {
-    [SseEvent.JOINED_CHAT_ROOMS_PREVIEW_UPDATED]: new Set(),
-    [SseEvent.TEST]: new Set(),
-  },
+const createInitialListeners = () => {
+  const entries = Object.entries(SseEvent) as [SseEventType, string][];
+  const result = {} as States['listeners'];
+
+  for (const [key] of entries) {
+    result[key] = new Set<EventCallback<SseEventPayloadMap[typeof key]>>();
+  }
+
+  return result;
 };
 
 const useSseEventBusStore = create<States & Actions>()(
   immer((set, get) => ({
-    ...initialState,
-
+    listeners: createInitialListeners(),
     on: <K extends SseEventType>(
       event: K,
       callback: EventCallback<SseEventPayloadMap[K]>
     ) => {
       const listeners = get().listeners;
-      listeners[event].add(callback);
-      set({ listeners });
+      const nextSet = new Set(listeners[event]);
+      nextSet.add(callback);
+
+      set({ listeners: { ...listeners, [event]: nextSet } });
     },
 
     off: <K extends SseEventType>(
@@ -58,8 +63,10 @@ const useSseEventBusStore = create<States & Actions>()(
       callback: EventCallback<SseEventPayloadMap[K]>
     ) => {
       const listeners = get().listeners;
-      listeners[event].delete(callback);
-      set({ listeners });
+      const nextSet = new Set(listeners[event]);
+      nextSet.delete(callback);
+
+      set({ listeners: { ...listeners, [event]: nextSet } });
     },
 
     emit: <K extends SseEventType>(
@@ -67,13 +74,13 @@ const useSseEventBusStore = create<States & Actions>()(
       payload: SseEventPayloadMap[K]
     ) => {
       const listeners = get().listeners[event];
-      listeners.forEach((callback) => {
+      [...listeners].forEach((callback) => {
         callback(payload);
       });
     },
 
     clear: () => {
-      set({ listeners: initialState.listeners });
+      set({ listeners: createInitialListeners() });
     },
   }))
 );
