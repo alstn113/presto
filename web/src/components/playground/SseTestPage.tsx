@@ -1,18 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { apiV1Client } from '../../libs/api/apiClient';
+import useSseEventBusStore from '../../store/useSseEventBusStore';
+import { SseEvent } from '../../hooks/sse/sseEventType';
 import useSse from '../../hooks/sse/useSse';
-import useUpdateEffect from '../../hooks/useUpdateEffect';
 
 const SseTestPage = () => {
-  const [messages, setMessages] = useState<string[]>([]);
-  const { test } = useSse();
+  useSse();
 
-  useUpdateEffect(() => {
-    console.log('Test event received in use updated Effect:', test);
-    if (test) {
-      setMessages((prevMessages) => [...prevMessages, test.event]);
-    }
-  }, [test]);
+  const [showTestA, setShowTestA] = useState(true);
+  const [showTestB, setShowTestB] = useState(true);
 
   const handleActiveNotifications = async () => {
     await apiV1Client.get('/sse/active', {
@@ -29,16 +25,79 @@ const SseTestPage = () => {
       >
         Fetch Active Notifications
       </button>
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold">Messages:</h2>
-        <ul>
-          {messages.map((message, index) => (
-            <li key={index} className="border-b py-2">
-              {message}
-            </li>
-          ))}
-        </ul>
+
+      <div className="mt-4 space-x-4">
+        <button
+          onClick={() => setShowTestA((prev) => !prev)}
+          className="px-4 py-2 text-white bg-green-500 rounded"
+        >
+          Toggle TestA
+        </button>
+        <button
+          onClick={() => setShowTestB((prev) => !prev)}
+          className="px-4 py-2 text-white bg-purple-500 rounded"
+        >
+          Toggle TestB
+        </button>
       </div>
+
+      <div className="mt-4">
+        <h2 className="text-xl font-semibold">Test Components</h2>
+        <div className="flex space-x-4">
+          <div className="w-1/2">{showTestA && <TestA />}</div>
+          <div className="w-1/2">{showTestB && <TestB />}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const TestA = () => {
+  const [messages, setMessages] = useState<string[]>([]);
+  const { on, off } = useSseEventBusStore();
+
+  useEffect(() => {
+    const handleMessageReceived = (message: string) => {
+      setMessages((prev) => [...prev, `${message} + A`]);
+    };
+
+    on(SseEvent.TEST, handleMessageReceived);
+    return () => off(SseEvent.TEST, handleMessageReceived);
+  }, []);
+
+  return (
+    <div>
+      <div className="font-bold">TestA</div>
+      {messages.map((message, index) => (
+        <div key={index} className="border-b py-2">
+          {message}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const TestB = () => {
+  const [messages, setMessages] = useState<string[]>([]);
+  const { on, off } = useSseEventBusStore();
+
+  useEffect(() => {
+    const handleMessageReceived = (message: string) => {
+      setMessages((prev) => [...prev, `${message} + B`]);
+    };
+
+    on(SseEvent.TEST, handleMessageReceived);
+    return () => off(SseEvent.TEST, handleMessageReceived);
+  }, []);
+
+  return (
+    <div>
+      <div className="font-bold">TestB</div>
+      {messages.map((message, index) => (
+        <div key={index} className="border-b py-2">
+          {message}
+        </div>
+      ))}
     </div>
   );
 };

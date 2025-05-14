@@ -1,5 +1,13 @@
-export const SseEventType = {
-  JOINED_CHAT_ROOMS_PREVIEW_UPDATED: 'joined-chat-rooms-preview-updated',
+import type { JoinedChatRoomPreviewUpdatedEvent } from '../socket/types';
+
+export const SseEvent = {
+  JOINED_CHAT_ROOMS_PREVIEW_UPDATED: 'joined_chat_rooms_preview_updated',
+  TEST: 'test',
 } as const;
 
-export type SseEventType = (typeof SseEventType)[keyof typeof SseEventType];
+export type SseEventType = (typeof SseEvent)[keyof typeof SseEvent];
+
+export interface SseEventPayloadMap {
+  [SseEvent.JOINED_CHAT_ROOMS_PREVIEW_UPDATED]: JoinedChatRoomPreviewUpdatedEvent;
+  [SseEvent.TEST]: string;
+}

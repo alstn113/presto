@@ -40,8 +40,8 @@ public class SseController {
                     Random random = new Random();
                     int randomNumber = random.nextInt(100);
                     emitter.send(SseEmitter.event()
-                            .name("test-event")
-                            .data("Random number: 1")
+                            .name("test")
+                            .data("Random number: " + randomNumber)
                             .id(Instant.now().toString()));
 
                     // Simulate some processing time

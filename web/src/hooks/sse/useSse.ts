@@ -1,24 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { SSE_URL } from '../socket/socketPaths';
-import { SseEventType } from './sseEventType';
-import useSseStore from '../../store/useSseStore';
+import useSseEventBusStore from '../../store/useSseEventBusStore';
+import { SseEvent, type SseEventType } from './sseEventType';
 
 const useSse = () => {
-  const [isConnected, setIsConnected] = useState<boolean>(false);
   const eventSourceRef = useRef<EventSource | null>(null);
-  const { joinedChatRoomPreviewUpdated, setJoinedChatRoomPreviewUpdated } =
-    useSseStore();
+  const { emit, clear } = useSseEventBusStore();
 
-  const handleAddEventListener = <T>(
-    eventType: SseEventType,
-    callback: (event: T) => void
-  ) => {
+  const handleAddEventListener = (eventType: SseEventType) => {
     eventSourceRef.current?.addEventListener(eventType, (event) => {
       try {
-        const data = JSON.parse(event.data) as T;
-        callback(data);
-      } catch (error) {
-        console.error('Error parsing SSE data:', error);
+        console.log('Event received:', eventType, event.data);
+        const data = JSON.parse(event.data);
+        emit(eventType, data);
+      } catch {
+        emit(eventType, event.data);
       }
     });
   };
@@ -29,7 +25,6 @@ const useSse = () => {
     });
 
     eventSourceRef.current.onopen = () => {
-      setIsConnected(true);
       console.log('SSE connection opened');
     };
 
@@ -37,10 +32,7 @@ const useSse = () => {
       console.log('SSE event received:', event.data);
     };
 
-    handleAddEventListener(
-      SseEventType.JOINED_CHAT_ROOMS_PREVIEW_UPDATED,
-      setJoinedChatRoomPreviewUpdated
-    );
+    handleAddEventListener(SseEvent.TEST);
 
     eventSourceRef.current.onerror = (error) => {
       console.error('SSE error:', error);
@@ -49,15 +41,10 @@ const useSse = () => {
     return () => {
       eventSourceRef.current?.close();
       eventSourceRef.current = null;
-      setIsConnected(false);
+      clear();
       console.log('SSE connection closed');
     };
   }, []);
-
-  return {
-    isConnected,
-    joinedChatRoomPreviewUpdated,
-  };
 };
 
 export default useSse;
