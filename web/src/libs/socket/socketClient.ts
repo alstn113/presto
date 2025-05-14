@@ -2,42 +2,30 @@ import { Client, type StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { SOCKET_URL } from '../../hooks/socket/socketPaths';
 
-interface Subscriptions {
+interface SocketSubscriptions {
   [topic: string]: {
     subscription: StompSubscription;
     callback: (message: unknown) => void;
   };
 }
 
-interface SubscriptionQueue {
+interface SocketSubscriptionQueue {
   [topic: string]: (message: unknown) => void;
 }
 
-interface SocketConfig {
+interface SocketClientConfig {
   url: string;
   reconnectDelay?: number;
   debug?: boolean;
 }
 
 class SocketClient {
-  private static instance: SocketClient;
-
   private client: Client | null = null;
-  private subscriptions: Subscriptions = {};
-  private subscriptionQueue: SubscriptionQueue = {};
-  private config: SocketConfig;
+  private subscriptions: SocketSubscriptions = {};
+  private subscriptionQueue: SocketSubscriptionQueue = {};
+  private config: SocketClientConfig;
 
-  public static getInstance(): SocketClient {
-    if (!SocketClient.instance) {
-      SocketClient.instance = new SocketClient({
-        url: SOCKET_URL,
-      });
-    }
-
-    return SocketClient.instance;
-  }
-
-  private constructor(config: SocketConfig) {
+  public constructor(config: SocketClientConfig) {
     this.config = {
       reconnectDelay: 5000,
       debug: false,
@@ -82,8 +70,13 @@ class SocketClient {
 
     const stompSub = this.client.subscribe(topic, (message) => {
       if (!message.body) return;
-      const parsedMessage = JSON.parse(message.body);
-      callback(parsedMessage);
+
+      try {
+        const parsedMessage = JSON.parse(message.body);
+        callback(parsedMessage);
+      } catch (e) {
+        console.error(`❌ Error parsing message for topic ${topic}:`, e);
+      }
     });
 
     this.subscriptions[topic] = {
@@ -155,4 +148,6 @@ class SocketClient {
   }
 }
 
-export const socketClient = SocketClient.getInstance();
+export const socketClient = new SocketClient({
+  url: SOCKET_URL,
+});

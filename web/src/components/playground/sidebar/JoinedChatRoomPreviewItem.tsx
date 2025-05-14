@@ -1,4 +1,4 @@
-import type { JoinedChatRoomPreviewResponse } from '../../../libs/api/chatRoomAPI';
+import type { JoinedChatRoomPreviewResponse } from '../../../libs/api/chatRoomApi.ts';
 import { formatRelativeDate } from '../../../libs/utils/dateUtils';
 import useChatRoomStore from '../../../store/useChatRoomStore';
 

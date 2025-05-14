@@ -4,6 +4,7 @@ import { socketClient } from '../libs/socket/socketClient';
 import Sidebar from '../components/playground/sidebar/Sidebar';
 import useChatRoomStore from '../store/useChatRoomStore';
 import ChatRoomView from '../components/playground/chatroom/ChatRoomView';
+import SseTestPage from '../components/playground/SseTestPage';
 
 const PlaygroundPage = () => {
   const { selectedChatRoom } = useChatRoomStore();
@@ -19,6 +20,9 @@ const PlaygroundPage = () => {
   return (
     <>
       <Navbar />
+      <div>
+        <SseTestPage />
+      </div>
       <div className="flex h-screen">
         <Sidebar />
         {!selectedChatRoom ? (
@@ -27,7 +31,7 @@ const PlaygroundPage = () => {
           </div>
         ) : (
           <ChatRoomView selectedChatRoom={selectedChatRoom} />
-        )}{' '}
+        )}
       </div>
     </>
   );

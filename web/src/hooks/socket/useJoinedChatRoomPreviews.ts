@@ -1,11 +1,11 @@
 import { SOCKET_PATHS } from './socketPaths';
 import type {
-  TypingStatusChangedEvent,
+  JoinedChatRoomPreviewUpdatedEvent,
   TypingStatusChangeRequest,
 } from './types';
 import useSocket from './useSocket';
 
-const useJoinedChatRoomPreviewSocket = <T = TypingStatusChangedEvent>(
+const useJoinedChatRoomPreviewSocket = <T = JoinedChatRoomPreviewUpdatedEvent>(
   onReceived: (event: T) => void
 ) => {
   useSocket<TypingStatusChangeRequest, T>(

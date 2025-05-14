@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { JoinedChatRoomPreviewUpdatedEvent } from '../../../hooks/socket/types';
 import useJoinedChatRoomPreviewSocket from '../../../hooks/socket/useJoinedChatRoomPreviews';
 import useGetJoinedChatRoomPreviews from '../../../hooks/chat/useGetJoinedChatRoomPreviews';
-import type { JoinedChatRoomPreviewResponse } from '../../../libs/api/chatRoomAPI';
+import type { JoinedChatRoomPreviewResponse } from '../../../libs/api/chatRoomApi.ts';
 import JoinedChatRoomPreviewItem from './JoinedChatRoomPreviewItem';
 
 const JoinedChatRoomPreviewList = () => {

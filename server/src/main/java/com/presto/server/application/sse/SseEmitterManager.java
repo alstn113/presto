@@ -44,6 +44,14 @@ public class SseEmitterManager {
         return emitter;
     }
 
+    public SseEmitter getEmitter(String clientId) {
+        SseEmitterData emitterData = emitters.get(clientId);
+        if (emitterData == null) {
+            return null;
+        }
+        return emitterData.emitter();
+    }
+
     private void sendConnectedEvent(SseEmitter emitter) {
         try {
             emitter.send(SseEmitter.event()

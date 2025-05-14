@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { ChatRoomAPI } from '../../libs/api/chatRoomAPI';
+import { ChatRoomApi } from '../../libs/api/chatRoomApi.ts';
 
 const useGetJoinedChatRoomPreviews = () => {
   return useSuspenseQuery({
@@ -9,7 +9,7 @@ const useGetJoinedChatRoomPreviews = () => {
 };
 
 const getKey = () => ['useGetJoinedChatRoomPreviews'];
-const fetcher = () => async () => await ChatRoomAPI.getJoinedChatRoomPreviews();
+const fetcher = () => async () => await ChatRoomApi.getJoinedChatRoomPreviews();
 
 useGetJoinedChatRoomPreviews.getkey = getKey;
 useGetJoinedChatRoomPreviews.fetcher = fetcher;

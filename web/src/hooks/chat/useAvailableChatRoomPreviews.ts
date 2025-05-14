@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { ChatRoomAPI } from '../../libs/api/chatRoomAPI';
+import { ChatRoomApi } from '../../libs/api/chatRoomApi.ts';
 
 const useGetAvailableChatRoomPreviews = () => {
   return useSuspenseQuery({
@@ -10,7 +10,7 @@ const useGetAvailableChatRoomPreviews = () => {
 
 const getKey = () => ['useGetAvailableChatRooms'];
 const fetcher = () => async () =>
-  await ChatRoomAPI.getAvailableChatRoomPreviews();
+  await ChatRoomApi.getAvailableChatRoomPreviews();
 
 useGetAvailableChatRoomPreviews.getkey = getKey;
 useGetAvailableChatRoomPreviews.fetcher = fetcher;

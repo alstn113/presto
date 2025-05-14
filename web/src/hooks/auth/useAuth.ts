@@ -1,7 +1,7 @@
 import { useAuthStore } from '../../store/useAuthStore';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { MemberAPI } from '../../libs/api/memberAPI';
-import { AuthAPI, type LoginRequest } from '../../libs/api/authAPI';
+import { MemberApi } from '../../libs/api/memberApi.ts';
+import { AuthApi, type LoginRequest } from '../../libs/api/authApi.ts';
 import { useNavigate } from 'react-router';
 
 const MY_INFO_QUERY_KEY = 'GetMyInfo';
@@ -13,7 +13,7 @@ export const useMyInfoQuery = () => {
     queryKey: [MY_INFO_QUERY_KEY],
     queryFn: async () => {
       try {
-        const memberInfo = await MemberAPI.getMyInfo();
+        const memberInfo = await MemberApi.getMyInfo();
         setAuth(memberInfo);
         return memberInfo;
       } catch (error) {
@@ -30,7 +30,7 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: async (request: LoginRequest) => {
-      await AuthAPI.login(request);
+      await AuthApi.login(request);
     },
     onSuccess: async () => {
       await queryClient.refetchQueries({ queryKey: [MY_INFO_QUERY_KEY] });
@@ -45,7 +45,7 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      await AuthAPI.logout();
+      await AuthApi.logout();
     },
     onSuccess: () => {
       clearAuth();

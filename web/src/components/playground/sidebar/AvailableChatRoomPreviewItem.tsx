@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useChatRoomStore from '../../../store/useChatRoomStore';
-import { ChatRoomAPI } from '../../../libs/api/chatRoomAPI';
+import { ChatRoomApi } from '../../../libs/api/chatRoomApi.ts';
 import useGetJoinedChatRoomPreviews from '../../../hooks/chat/useGetJoinedChatRoomPreviews';
 import useGetAvailableChatRoomPreviews from '../../../hooks/chat/useAvailableChatRoomPreviews';
 
@@ -12,7 +12,7 @@ const AvailableChatRoomPreviewItem = ({ room }: AvailableChatRoomItemProps) => {
   const queryClient = useQueryClient();
   const { selectedChatRoom, selectChatRoom } = useChatRoomStore();
   const { mutate: joinChatRoom } = useMutation({
-    mutationFn: ChatRoomAPI.joinChatRoom,
+    mutationFn: ChatRoomApi.joinChatRoom,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: useGetJoinedChatRoomPreviews.getkey(),

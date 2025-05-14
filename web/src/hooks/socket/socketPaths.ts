@@ -15,3 +15,5 @@ export const SOCKET_PATHS = {
     SUBSCRIBE: `/user/queue/chat-rooms/joined`,
   },
 };
+
+export const SSE_URL: string = `${BASE_URL}/api/v1/sse`;
