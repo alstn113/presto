@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { apiV1Client } from '../../libs/api/apiClient';
-import useSseEventBusStore from '../../store/useSseEventBusStore';
-import { SseEvent } from '../../hooks/sse/sseEventType';
 import useSse from '../../hooks/sse/useSse';
+import useSseListener from '../../hooks/sse/useSseListener';
+import { SseEvent } from '../../hooks/sse/sseEventType';
 
 const SseTestPage = () => {
   useSse();
@@ -54,16 +54,10 @@ const SseTestPage = () => {
 
 const TestA = () => {
   const [messages, setMessages] = useState<string[]>([]);
-  const { on, off } = useSseEventBusStore();
 
-  useEffect(() => {
-    const handleMessageReceived = (message: string) => {
-      setMessages((prev) => [...prev, `${message} + A`]);
-    };
-
-    on(SseEvent.TEST, handleMessageReceived);
-    return () => off(SseEvent.TEST, handleMessageReceived);
-  }, []);
+  useSseListener(SseEvent.TEST, (message) => {
+    setMessages((prev) => [...prev, `${message} + A`]);
+  });
 
   return (
     <div>
@@ -79,16 +73,10 @@ const TestA = () => {
 
 const TestB = () => {
   const [messages, setMessages] = useState<string[]>([]);
-  const { on, off } = useSseEventBusStore();
 
-  useEffect(() => {
-    const handleMessageReceived = (message: string) => {
-      setMessages((prev) => [...prev, `${message} + B`]);
-    };
-
-    on(SseEvent.TEST, handleMessageReceived);
-    return () => off(SseEvent.TEST, handleMessageReceived);
-  }, []);
+  useSseListener(SseEvent.TEST, (message) => {
+    setMessages((prev) => [...prev, `${message} + B`]);
+  });
 
   return (
     <div>
