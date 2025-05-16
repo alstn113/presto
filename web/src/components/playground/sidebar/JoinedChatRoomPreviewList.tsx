@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
-import type { JoinedChatRoomPreviewUpdatedEvent } from '../../../hooks/socket/types';
-import useJoinedChatRoomPreviewSocket from '../../../hooks/socket/useJoinedChatRoomPreviews';
 import useGetJoinedChatRoomPreviews from '../../../hooks/chat/useGetJoinedChatRoomPreviews';
-import type { JoinedChatRoomPreviewResponse } from '../../../libs/api/chatRoomApi.ts';
+import type { JoinedChatRoomPreviewResponse } from '../../../libs/api/chatRoomApi';
 import JoinedChatRoomPreviewItem from './JoinedChatRoomPreviewItem';
+import { SseEvent } from '../../../hooks/sse/sseEventType';
+import type { JoinedChatRoomPreviewUpdatedEvent } from '../../../hooks/socket/types';
+import useSseListener from '../../../hooks/sse/useSseListener';
 
 const JoinedChatRoomPreviewList = () => {
   const { data: initialRooms } = useGetJoinedChatRoomPreviews();
   const [rooms, setRooms] = useState<JoinedChatRoomPreviewResponse[]>([]);
-
-  useEffect(() => {
-    setRooms(initialRooms);
-  }, [initialRooms]);
 
   const handleOnMessageReceived = (
     message: JoinedChatRoomPreviewUpdatedEvent
@@ -35,7 +32,14 @@ const JoinedChatRoomPreviewList = () => {
     );
   };
 
-  useJoinedChatRoomPreviewSocket(handleOnMessageReceived);
+  useEffect(() => {
+    setRooms(initialRooms);
+  }, [initialRooms]);
+
+  useSseListener(
+    SseEvent.JOINED_CHAT_ROOMS_PREVIEW_UPDATED,
+    handleOnMessageReceived
+  );
 
   return (
     <div className="mb-6">

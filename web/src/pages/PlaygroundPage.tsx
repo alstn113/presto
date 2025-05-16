@@ -4,11 +4,12 @@ import { socketClient } from '../libs/socket/socketClient';
 import Sidebar from '../components/playground/sidebar/Sidebar';
 import useChatRoomStore from '../store/useChatRoomStore';
 import ChatRoomView from '../components/playground/chatroom/ChatRoomView';
-import SseTestPage from '../components/playground/SseTestPage';
+import useSse from '../hooks/sse/useSse';
 
 const PlaygroundPage = () => {
   const { selectedChatRoom } = useChatRoomStore();
 
+  useSse();
   useEffect(() => {
     socketClient.connect();
 
@@ -20,9 +21,6 @@ const PlaygroundPage = () => {
   return (
     <>
       <Navbar />
-      <div>
-        <SseTestPage />
-      </div>
       <div className="flex h-screen">
         <Sidebar />
         {!selectedChatRoom ? (

@@ -1,7 +1,7 @@
 import { useAuthStore } from '../../store/useAuthStore';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { MemberApi } from '../../libs/api/memberApi.ts';
-import { AuthApi, type LoginRequest } from '../../libs/api/authApi.ts';
+import { MemberApi } from '../../libs/api/memberApi';
+import { AuthApi, type LoginRequest } from '../../libs/api/authApi';
 import { useNavigate } from 'react-router';
 
 const MY_INFO_QUERY_KEY = 'GetMyInfo';

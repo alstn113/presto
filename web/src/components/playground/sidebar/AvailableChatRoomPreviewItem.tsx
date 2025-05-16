@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useChatRoomStore from '../../../store/useChatRoomStore';
-import { ChatRoomApi } from '../../../libs/api/chatRoomApi.ts';
+import { ChatRoomApi } from '../../../libs/api/chatRoomApi';
 import useGetJoinedChatRoomPreviews from '../../../hooks/chat/useGetJoinedChatRoomPreviews';
 import useGetAvailableChatRoomPreviews from '../../../hooks/chat/useAvailableChatRoomPreviews';
 

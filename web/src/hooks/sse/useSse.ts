@@ -10,7 +10,7 @@ const useSse = () => {
   const handleAddEventListener = (eventType: SseEventType) => {
     eventSourceRef.current?.addEventListener(eventType, (event) => {
       try {
-        console.log('Event received:', eventType, event.data);
+        console.debug('Event received:', eventType, event.data);
         const data = JSON.parse(event.data);
         emit(eventType, data);
       } catch {
@@ -32,7 +32,9 @@ const useSse = () => {
       console.log('SSE event received:', event.data);
     };
 
-    handleAddEventListener(SseEvent.TEST);
+    for (const eventType of Object.values(SseEvent)) {
+      handleAddEventListener(eventType);
+    }
 
     eventSourceRef.current.onerror = (error) => {
       console.error('SSE error:', error);

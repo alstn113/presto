@@ -3,7 +3,7 @@ package com.presto.server.application.chat.message;
 import com.presto.server.application.chat.message.request.ChatMessageRequest;
 import com.presto.server.application.chat.message.response.ChatMessageReceivedEvent;
 import com.presto.server.application.chat.message.response.ChatMessageReceivedEvent.Sender;
-import com.presto.server.application.chat.message.response.JoinedChatRoomPreviewUpdatedEvent;
+import com.presto.server.application.sse.SseEmitterService;
 import com.presto.server.domain.chat.message.ChatMessage;
 import com.presto.server.domain.chat.message.ChatMessageRepository;
 import com.presto.server.domain.chat.message.MessageType;
@@ -11,6 +11,7 @@ import com.presto.server.domain.chat.room.ChatRoom;
 import com.presto.server.domain.chat.room.ChatRoomParticipant;
 import com.presto.server.domain.chat.room.ChatRoomParticipantRepository;
 import com.presto.server.domain.chat.room.ChatRoomRepository;
+import com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto;
 import com.presto.server.domain.member.Member;
 import com.presto.server.domain.member.MemberRepository;
 import com.presto.server.support.error.CoreException;
@@ -30,6 +31,7 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository memberRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final SseEmitterService sseEmitterService;
 
     @Transactional
     public void sendMessage(ChatMessageRequest request) {
@@ -45,7 +47,7 @@ public class ChatMessageService {
         chatMessageRepository.save(chatMessage);
 
         sendChatMessageReceivedEvent(chatRoom, chatMessage, member);
-        sendChatRoomPreviewUpdatedEvent(chatRoom, chatMessage);
+        sendChatRoomPreviewUpdatedEvent(chatRoom.getId());
     }
 
     private void sendChatMessageReceivedEvent(ChatRoom chatRoom, ChatMessage chatMessage, Member member) {
@@ -56,21 +58,18 @@ public class ChatMessageService {
                 new Sender(member.getId(), member.getUsername()),
                 chatMessage.getCreatedAt()
         );
-        String destination = "/topic/chat/%s".formatted(chatRoom.getId()); 
-        messagingTemplate.convertAndSend(destination, event); 
+        String destination = "/topic/chat/%s".formatted(chatRoom.getId());
+        messagingTemplate.convertAndSend(destination, event);
     }
 
-    private void sendChatRoomPreviewUpdatedEvent(ChatRoom chatRoom, ChatMessage chatMessage) {
-        List<ChatRoomParticipant> participants = chatRoomParticipantRepository.findByChatRoomId(chatRoom.getId());
-        JoinedChatRoomPreviewUpdatedEvent event = new JoinedChatRoomPreviewUpdatedEvent(
-                chatRoom.getId(),
-                chatRoom.getName(),
-                chatMessage.getContent(),
-                chatMessage.getCreatedAt()
-        );
+    private void sendChatRoomPreviewUpdatedEvent(String chatRoomId) {
+        List<ChatRoomParticipant> participants = chatRoomParticipantRepository.findByChatRoomId(chatRoomId);
         participants.forEach(it -> {
-            String destination = "/queue/chat-rooms/joined";
-            messagingTemplate.convertAndSendToUser(it.getMemberId(), destination, event);
+            String memberId = it.getMemberId();
+            JoinedChatRoomPreviewDto event = chatRoomRepository
+                    .findJoinedChatRoomPreviewByMemberId(chatRoomId, memberId)
+                    .orElseThrow(() -> new CoreException(ErrorType.CHAT_ROOM_NOT_FOUND));
+            sseEmitterService.sendChatRoomPreviewUpdatedEvent(memberId, event);
         });
     }
 

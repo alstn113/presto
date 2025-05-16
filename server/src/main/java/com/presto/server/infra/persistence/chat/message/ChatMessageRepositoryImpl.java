@@ -41,7 +41,7 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepositoryCustom {
                 .leftJoin(member).on(chatMessage.senderId.eq(member.id))
                 .where(buildWhereClause(query))
                 .orderBy(determineOrder(query))
-                .limit(query.size() + 1)
+                .limit(query.size() + 1L)
                 .fetch();
 
         boolean hasNextPage = chatMessages.size() > query.size();

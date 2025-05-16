@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { ChatRoomApi } from '../../libs/api/chatRoomApi.ts';
+import { ChatRoomApi } from '../../libs/api/chatRoomApi';
 
 const useGetAvailableChatRoomPreviews = () => {
   return useSuspenseQuery({
