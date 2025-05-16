@@ -16,6 +16,6 @@ public class ChatMessageQueryService {
 
     @Transactional(readOnly = true)
     public CursorPaginatedResponse<ChatMessageDto> getChatMessages(ChatMessagesQuery query) {
-        return null;
+        return chatMessageRepository.findChatMessages(query);
     }
 }

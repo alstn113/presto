@@ -1,33 +1,33 @@
-import {apiV1Client} from './apiClient';
-import {handleAPIResponse} from './apiUtils';
-import type {ApiResponse} from './response/apiResponse';
+import { apiV1Client } from './apiClient';
+import { handleAPIResponse } from './apiUtils';
+import type { ApiResponse } from './response/apiResponse';
 
 export const ChatRoomApi = {
   getJoinedChatRoomPreviews: async () => {
     return await handleAPIResponse(() =>
-        apiV1Client.get<ApiResponse<JoinedChatRoomPreviewResponse[]>>(
-            '/chat-rooms/joined'
-        )
+      apiV1Client.get<ApiResponse<JoinedChatRoomPreviewResponse[]>>(
+        '/chat-rooms/joined'
+      )
     );
   },
 
   getAvailableChatRoomPreviews: async () => {
     return await handleAPIResponse(() =>
-        apiV1Client.get<ApiResponse<AvailableChatRoomPreviewResponse[]>>(
-            '/chat-rooms/available'
-        )
+      apiV1Client.get<ApiResponse<AvailableChatRoomPreviewResponse[]>>(
+        '/chat-rooms/available'
+      )
     );
   },
 
   joinChatRoom: async ({ chatRoomId }: JoinChatRoomRequest) => {
     return await handleAPIResponse(() =>
-        apiV1Client.post<ApiResponse<void>>(`/chat-rooms/${chatRoomId}/join`)
+      apiV1Client.post<ApiResponse<void>>(`/chat-rooms/${chatRoomId}/join`)
     );
   },
 
   leaveChatRoom: async ({ chatRoomId }: LeaveChatRoomRequest) => {
     return await handleAPIResponse(() =>
-        apiV1Client.post<ApiResponse<void>>(`/chat-rooms/${chatRoomId}/leave`)
+      apiV1Client.post<ApiResponse<void>>(`/chat-rooms/${chatRoomId}/leave`)
     );
   },
 };
@@ -35,6 +35,7 @@ export const ChatRoomApi = {
 export interface JoinedChatRoomPreviewResponse {
   chatRoomId: string;
   chatRoomName: string;
+  chatMessageId: string;
   lastMessageContent: string;
   lastMessageSentAt: string;
   unreadMessageCount: number;

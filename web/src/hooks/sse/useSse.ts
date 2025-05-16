@@ -10,8 +10,8 @@ const useSse = () => {
   const handleAddEventListener = (eventType: SseEventType) => {
     eventSourceRef.current?.addEventListener(eventType, (event) => {
       try {
-        console.debug('Event received:', eventType, event.data);
         const data = JSON.parse(event.data);
+        console.log('Event received:', eventType, data);
         emit(eventType, data);
       } catch {
         emit(eventType, event.data);

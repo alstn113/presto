@@ -5,6 +5,7 @@ import java.time.Instant;
 public record JoinedChatRoomPreviewDto(
         String chatRoomId,
         String chatRoomName,
+        String chatMessageId,
         String lastMessageContent,
         Instant lastMessageSentAt,
         long unreadMessageCount,

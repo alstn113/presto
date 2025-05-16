@@ -14,6 +14,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
                     cr.id,
                     cr.name,
                     cmLatest.content,
+                    cmLatest.content,
                     cmLatest.createdAt,
                     count(distinct unreadMsg),
                     count(distinct roomPart)
@@ -36,6 +37,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
                 select new com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto(
                     cr.id,
                     cr.name,
+                    cmLatest.id,
                     cmLatest.content,
                     cmLatest.createdAt,
                     count(distinct unreadMsg),

@@ -28,6 +28,7 @@ export interface ChatMessageReceivedEvent {
 export interface JoinedChatRoomPreviewUpdatedEvent {
   chatRoomId: string;
   chatRoomName: string;
+  chatMessageId: string;
   lastMessageContent: string;
   lastMessageSentAt: string;
   unreadMessageCount: number;
