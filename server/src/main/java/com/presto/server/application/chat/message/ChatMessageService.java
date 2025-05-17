@@ -2,7 +2,6 @@ package com.presto.server.application.chat.message;
 
 import com.presto.server.application.chat.message.request.ChatMessageRequest;
 import com.presto.server.application.chat.message.response.ChatMessageReceivedEvent;
-import com.presto.server.application.chat.message.response.ChatMessageReceivedEvent.Sender;
 import com.presto.server.application.sse.SseEmitterService;
 import com.presto.server.domain.chat.message.ChatMessage;
 import com.presto.server.domain.chat.message.ChatMessageRepository;
@@ -35,27 +34,27 @@ public class ChatMessageService {
 
     @Transactional
     public void sendMessage(ChatMessageRequest request) {
-        Member member = findMemberById(request.accessor().id());
+        String senderId = request.accessor().id();
         ChatRoom chatRoom = findChatRoomById(request.chatRoomId());
 
         ChatMessage chatMessage = new ChatMessage(
                 chatRoom.getId(),
-                member.getId(),
+                senderId,
                 MessageType.TEXT,
                 request.content()
         );
         chatMessageRepository.save(chatMessage);
 
-        sendChatMessageReceivedEvent(chatRoom, chatMessage, member);
+        sendChatMessageReceivedEvent(chatRoom, chatMessage, senderId);
         sendChatRoomPreviewUpdatedEvent(chatRoom.getId());
     }
 
-    private void sendChatMessageReceivedEvent(ChatRoom chatRoom, ChatMessage chatMessage, Member member) {
+    private void sendChatMessageReceivedEvent(ChatRoom chatRoom, ChatMessage chatMessage, String senderId) {
         ChatMessageReceivedEvent event = new ChatMessageReceivedEvent(
                 chatMessage.getId(),
                 chatMessage.getContent(),
                 chatMessage.getType(),
-                new Sender(member.getId(), member.getUsername()),
+                senderId,
                 chatMessage.getCreatedAt()
         );
         String destination = "/topic/chat/%s".formatted(chatRoom.getId());

@@ -1,9 +1,14 @@
+import useChatRoomParticipantInfo from '../../../hooks/chat/useChatRoomParticipantInfo';
+
 interface TypingIndicatorProps {
-  typingUsers: Record<string, string>;
+  typingUserIds: Set<string>;
 }
 
-const TypingIndicator = ({ typingUsers }: TypingIndicatorProps) => {
-  const names = Object.values(typingUsers);
+const TypingIndicator = ({ typingUserIds }: TypingIndicatorProps) => {
+  const { getParticipantById } = useChatRoomParticipantInfo();
+  const names = Array.from(typingUserIds)
+    .map((id) => getParticipantById(id)?.username)
+    .filter((name) => name !== undefined) as string[];
 
   const createMessage = () => {
     if (names.length === 0) return '';

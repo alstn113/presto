@@ -1,8 +1,25 @@
 import { apiV1Client } from './apiClient';
 import { handleAPIResponse } from './apiUtils';
+import type { ChatMessageDto } from './chatMessageApi';
 import type { ApiResponse } from './response/apiResponse';
 
 export const ChatRoomApi = {
+  getChatRoomOverview: async ({
+    chatRoomId,
+    size = 30,
+  }: ChatRoomOverviewRequest) => {
+    return await handleAPIResponse(() =>
+      apiV1Client.get<ApiResponse<ChatRoomOverviewResponse>>(
+        `/chat-rooms/${chatRoomId}/overview`,
+        {
+          params: {
+            size,
+          },
+        }
+      )
+    );
+  },
+
   getJoinedChatRoomPreviews: async () => {
     return await handleAPIResponse(() =>
       apiV1Client.get<ApiResponse<JoinedChatRoomPreviewResponse[]>>(
@@ -31,6 +48,25 @@ export const ChatRoomApi = {
     );
   },
 };
+
+export interface ChatRoomOverviewRequest {
+  chatRoomId: string;
+  size?: number;
+}
+
+export interface ChatRoomOverviewResponse {
+  messages: ChatMessageDto[];
+  participants: ChatParticipantInfoDto[];
+  selfId: string;
+  prevCursor: string;
+  nextCursor: string;
+}
+
+export interface ChatParticipantInfoDto {
+  id: string;
+  username: string;
+  lastReadMessageId: string;
+}
 
 export interface JoinedChatRoomPreviewResponse {
   chatRoomId: string;

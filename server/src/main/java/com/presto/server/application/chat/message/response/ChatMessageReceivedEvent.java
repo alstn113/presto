@@ -7,13 +7,7 @@ public record ChatMessageReceivedEvent(
         String id,
         String content,
         MessageType messageType,
-        Sender sender,
+        String senderId,
         Instant sentAt
 ) {
-
-    public record Sender(
-            String id,
-            String username
-    ) {
-    }
 }

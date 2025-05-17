@@ -1,16 +1,17 @@
 import { useInfiniteQuery, type InfiniteData } from '@tanstack/react-query';
 import {
   ChatMessageApi,
-  type ChatMessageDto,
-  type ChatMessagesRequest,
+  type ChatMessagesCursorRequest,
+  type ChatMessagesCursorResponse,
 } from '../../libs/api/chatMessageApi';
-import type { CursorResult } from '../../libs/api/response/apiResponse';
-interface UseChatMessagesInfiniteQueryProps {
+interface UseChatMessagesCursorInfiniteQueryProps {
   chatRoomId: string;
+  initialData: ChatMessagesCursorResponse;
 }
-const useChatMessagesInfiniteQuery = ({
+const useChatMessagesCursorInfiniteQuery = ({
   chatRoomId,
-}: UseChatMessagesInfiniteQueryProps) => {
+  initialData,
+}: UseChatMessagesCursorInfiniteQueryProps) => {
   const {
     data,
     fetchNextPage,
@@ -23,22 +24,17 @@ const useChatMessagesInfiniteQuery = ({
     isError,
     error,
   } = useInfiniteQuery<
-    CursorResult<ChatMessageDto>,
+    ChatMessagesCursorResponse,
     Error,
-    InfiniteData<CursorResult<ChatMessageDto>>,
+    InfiniteData<ChatMessagesCursorResponse>,
     string[],
-    ChatMessagesRequest
+    ChatMessagesCursorRequest
   >({
     queryKey: ['chatMessages', chatRoomId],
     queryFn: ({ pageParam }) => ChatMessageApi.getChatMessages(pageParam),
-    initialPageParam: {
-      direction: 'INIT',
-      chatRoomId,
-      cursorMessageId: null,
-    },
+
     getNextPageParam: (lastPage) => {
       const nextCursor = lastPage.nextCursor;
-      if (!nextCursor) return undefined; // 실행하지 않음.
       return {
         direction: 'NEXT',
         chatRoomId,
@@ -48,7 +44,6 @@ const useChatMessagesInfiniteQuery = ({
     },
     getPreviousPageParam: (firstPage) => {
       const prevCursor = firstPage.prevCursor;
-      if (!prevCursor) return undefined; // 실행하지 않음.
       return {
         direction: 'PREV',
         chatRoomId,
@@ -56,7 +51,24 @@ const useChatMessagesInfiniteQuery = ({
         lastMessageId: null,
       };
     },
-    enabled: !!chatRoomId, // chatRoomId가 있을 때만 쿼리 실행
+    initialData: {
+      pages: [initialData],
+      // 초기 데이터의 pageParams는 임의의 값으로 설정
+      pageParams: [
+        {
+          direction: 'NEXT',
+          chatRoomId,
+          cursorMessageId: 'id',
+        },
+      ],
+    },
+    // 초기 데이터의 pageParams는 임의의 값으로 설정
+    initialPageParam: {
+      direction: 'NEXT',
+      chatRoomId,
+      cursorMessageId: 'id',
+    },
+    enabled: false,
   });
 
   return {
@@ -73,4 +85,4 @@ const useChatMessagesInfiniteQuery = ({
   };
 };
 
-export default useChatMessagesInfiniteQuery;
+export default useChatMessagesCursorInfiniteQuery;

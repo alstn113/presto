@@ -1,17 +1,17 @@
 import type { MessageType } from '../../hooks/socket/types';
 import { apiV1Client } from './apiClient';
 import { handleAPIResponse } from './apiUtils';
-import type { ApiResponse, CursorResult } from './response/apiResponse';
+import type { ApiResponse } from './response/apiResponse';
 
 export const ChatMessageApi = {
   getChatMessages: async ({
     chatRoomId,
     direction,
-    cursorMessageId = null,
+    cursorMessageId,
     size = 30,
-  }: ChatMessagesRequest) => {
+  }: ChatMessagesCursorRequest) => {
     return await handleAPIResponse(() =>
-      apiV1Client.get<ApiResponse<CursorResult<ChatMessageDto>>>(
+      apiV1Client.get<ApiResponse<ChatMessagesCursorResponse>>(
         `/chat-rooms/${chatRoomId}/messages`,
         {
           params: {
@@ -25,32 +25,23 @@ export const ChatMessageApi = {
   },
 };
 
-interface ChatMessagesRequestBase {
+export interface ChatMessagesCursorRequest {
   chatRoomId: string;
   size?: number;
+  direction: 'NEXT' | 'PREV';
+  cursorMessageId: string;
 }
 
-export type ChatMessagesRequest =
-  | (ChatMessagesRequestBase & {
-      direction: 'INIT';
-      cursorMessageId: null;
-    })
-  | (ChatMessagesRequestBase & {
-      direction: 'NEXT';
-      cursorMessageId: string;
-    })
-  | (ChatMessagesRequestBase & {
-      direction: 'PREV';
-      cursorMessageId: string;
-    });
+export interface ChatMessagesCursorResponse {
+  messages: ChatMessageDto[];
+  prevCursor: string;
+  nextCursor: string;
+}
 
 export interface ChatMessageDto {
   id: string;
   content: string;
   messageType: MessageType;
-  sender: {
-    id: string;
-    username: string;
-  };
+  senderId: string;
   sentAt: string;
 }

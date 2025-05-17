@@ -2,5 +2,13 @@ package com.presto.server.domain.chat.message;
 
 public enum MessageCursorDirection {
 
-    INIT, PREV, NEXT
+    PREV, NEXT;
+
+    public boolean isPrev() {
+        return this == PREV;
+    }
+
+    public boolean isNext() {
+        return this == NEXT;
+    }
 }

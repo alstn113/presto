@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, String>, ChatRoomRepositoryCustom {
 
     @Query("""
                 select new com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto(

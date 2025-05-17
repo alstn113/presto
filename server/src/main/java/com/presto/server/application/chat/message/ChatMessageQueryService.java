@@ -1,9 +1,8 @@
 package com.presto.server.application.chat.message;
 
-import com.presto.server.domain.CursorResult;
 import com.presto.server.domain.chat.message.ChatMessageRepository;
-import com.presto.server.domain.chat.message.dto.ChatMessageDto;
-import com.presto.server.domain.chat.message.dto.ChatMessagesRequest;
+import com.presto.server.domain.chat.message.dto.ChatMessagesCursorRequest;
+import com.presto.server.domain.chat.message.dto.ChatMessagesCursorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,12 @@ public class ChatMessageQueryService {
     private final ChatMessageRepository chatMessageRepository;
 
     @Transactional(readOnly = true)
-    public CursorResult<ChatMessageDto> getChatMessages(ChatMessagesRequest request) {
-        return chatMessageRepository.findChatMessages(request);
+    public ChatMessagesCursorResponse getChatMessagesCursor(ChatMessagesCursorRequest request) {
+        return chatMessageRepository.findChatMessagesCursor(
+                request.chatRoomId(),
+                request.cursorMessageId(),
+                request.direction(),
+                request.size()
+        );
     }
 }

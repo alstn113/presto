@@ -1,5 +1,6 @@
 package com.presto.server.api.chat.room;
 
+import com.presto.server.api.chat.room.request.ChatRoomOverviewRequest;
 import com.presto.server.application.chat.room.ChatRoomQueryService;
 import com.presto.server.application.chat.room.ChatRoomService;
 import com.presto.server.application.chat.room.request.AvailableChatRoomPreviewsQuery;
@@ -7,6 +8,7 @@ import com.presto.server.application.chat.room.request.JoinChatRoomRequest;
 import com.presto.server.application.chat.room.request.JoinedChatRoomPreviewsQuery;
 import com.presto.server.application.chat.room.request.LeaveChatRoomRequest;
 import com.presto.server.domain.chat.room.dto.AvailableChatRoomPreviewDto;
+import com.presto.server.domain.chat.room.dto.ChatRoomOverviewResponse;
 import com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto;
 import com.presto.server.infra.security.Accessor;
 import com.presto.server.support.response.ApiResponse;
@@ -17,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,6 +28,18 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatRoomQueryService chatRoomQueryService;
+
+    @GetMapping("/api/v1/chat-rooms/{chatRoomId}/overview")
+    public ResponseEntity<ApiResponse<ChatRoomOverviewResponse>> getChatRoomOverview(
+            @PathVariable String chatRoomId,
+            @RequestParam(defaultValue = "30") int size,
+            @AuthenticationPrincipal Accessor accessor
+    ) {
+        ChatRoomOverviewRequest request = new ChatRoomOverviewRequest(chatRoomId, size, accessor.id());
+        ChatRoomOverviewResponse response = chatRoomQueryService.getChatRoomOverview(request);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 
     @GetMapping("/api/v1/chat-rooms/joined")
     public ResponseEntity<ApiResponse<List<JoinedChatRoomPreviewDto>>> getJoinedChatRoomPreviews(

@@ -8,21 +8,11 @@ public record ChatMessageDto(
         String id,
         String content,
         MessageType messageType,
-        Sender sender,
+        String senderId,
         Instant sentAt
 ) {
 
     @QueryProjection
     public ChatMessageDto {
-    }
-
-    public record Sender(
-            String id,
-            String username
-    ) {
-
-        @QueryProjection
-        public Sender {
-        }
     }
 }

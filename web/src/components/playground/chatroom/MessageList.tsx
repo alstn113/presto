@@ -1,13 +1,16 @@
 import type { ChatMessageReceivedEvent } from '../../../hooks/socket/types';
 import { formatRelativeDate } from '../../../libs/utils/dateUtils';
+import useChatRoomParticipantInfo from '../../../hooks/chat/useChatRoomParticipantInfo';
 
 interface Props {
   messages: ChatMessageReceivedEvent[];
 }
 
 const MessageList = ({ messages }: Props) => {
+  const { getParticipantById } = useChatRoomParticipantInfo();
   const renderMessage = (msg: ChatMessageReceivedEvent) => {
     const time = formatRelativeDate(msg.sentAt);
+    const username = getParticipantById(msg.senderId)?.username;
 
     switch (msg.messageType) {
       case 'TEXT':
@@ -17,9 +20,7 @@ const MessageList = ({ messages }: Props) => {
             className="p-2 rounded border border-gray-200 bg-white flex justify-between items-start"
           >
             <div>
-              <span className="font-bold text-blue-600">
-                {msg.sender.username}:
-              </span>{' '}
+              <span className="font-bold text-blue-600">{username}:</span>
               <span className="text-gray-800">{msg.content}</span>
             </div>
             <span className="text-xs text-gray-400 ml-2 whitespace-nowrap">
