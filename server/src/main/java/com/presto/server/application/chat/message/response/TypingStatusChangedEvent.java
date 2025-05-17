@@ -7,7 +7,7 @@ public record TypingStatusChangedEvent(
 ) {
 
     public record Sender(
-            String senderId,
+            String id,
             String username
     ) {
     }

@@ -12,7 +12,7 @@ public record ChatMessageReceivedEvent(
 ) {
 
     public record Sender(
-            String senderId,
+            String id,
             String username
     ) {
     }

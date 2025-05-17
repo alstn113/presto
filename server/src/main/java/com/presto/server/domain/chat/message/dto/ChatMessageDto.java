@@ -18,7 +18,7 @@ public record ChatMessageDto(
 
     public record Sender(
             String id,
-            String name
+            String username
     ) {
 
         @QueryProjection
