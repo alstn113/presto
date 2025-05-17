@@ -6,6 +6,7 @@ import java.util.List;
 public record CursorResult<T>(
         List<T> content,
         String prevCursor,
-        String nextCursor
+        String nextCursor,
+        String lastReadMessageId
 ) {
 }

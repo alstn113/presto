@@ -22,7 +22,6 @@ const ChatRoomView = ({ selectedChatRoom }: ChatRoomViewProps) => {
 
   const { data } = useChatMessagesInfiniteQuery({
     chatRoomId: selectedChatRoom.id,
-    lastMessageId: null,
   });
 
   useEffect(() => {

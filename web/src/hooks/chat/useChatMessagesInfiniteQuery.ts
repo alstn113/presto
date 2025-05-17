@@ -7,11 +7,9 @@ import {
 import type { CursorResult } from '../../libs/api/response/apiResponse';
 interface UseChatMessagesInfiniteQueryProps {
   chatRoomId: string;
-  lastMessageId: string | null;
 }
 const useChatMessagesInfiniteQuery = ({
   chatRoomId,
-  lastMessageId,
 }: UseChatMessagesInfiniteQueryProps) => {
   const {
     data,
@@ -37,7 +35,6 @@ const useChatMessagesInfiniteQuery = ({
       direction: 'INIT',
       chatRoomId,
       cursorMessageId: null,
-      lastMessageId,
     },
     getNextPageParam: (lastPage) => {
       const nextCursor = lastPage.nextCursor;

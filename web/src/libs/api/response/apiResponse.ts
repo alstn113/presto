@@ -21,4 +21,5 @@ export interface CursorResult<T> {
   content: T[];
   prevCursor: string | null;
   nextCursor: string | null;
+  lastReadMessageId: string | null;
 }

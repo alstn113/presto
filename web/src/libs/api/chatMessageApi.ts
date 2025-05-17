@@ -8,7 +8,6 @@ export const ChatMessageApi = {
     chatRoomId,
     direction,
     cursorMessageId = null,
-    lastMessageId = null,
     size = 30,
   }: ChatMessagesRequest) => {
     return await handleAPIResponse(() =>
@@ -18,7 +17,6 @@ export const ChatMessageApi = {
           params: {
             direction,
             cursorMessageId,
-            lastMessageId,
             size,
           },
         }
@@ -35,17 +33,14 @@ interface ChatMessagesRequestBase {
 export type ChatMessagesRequest =
   | (ChatMessagesRequestBase & {
       direction: 'INIT';
-      lastMessageId: string | null;
       cursorMessageId: null;
     })
   | (ChatMessagesRequestBase & {
       direction: 'NEXT';
-      lastMessageId: null;
       cursorMessageId: string;
     })
   | (ChatMessagesRequestBase & {
       direction: 'PREV';
-      lastMessageId: null;
       cursorMessageId: string;
     });
 
