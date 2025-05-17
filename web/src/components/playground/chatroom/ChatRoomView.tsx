@@ -9,6 +9,7 @@ import TypingIndicator from './TypingIndicator';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import useUpdateEffect from '../../../hooks/useUpdateEffect';
+import useChatMessagesInfiniteQuery from '../../../hooks/chat/useChatMessagesInfiniteQuery';
 
 interface ChatRoomViewProps {
   selectedChatRoom: { id: string; name: string };
@@ -19,28 +20,47 @@ const ChatRoomView = ({ selectedChatRoom }: ChatRoomViewProps) => {
   const [input, setInput] = useState('');
   const [typingUsers, setTypingUsers] = useState<Record<string, string>>({});
 
+  const { data } = useChatMessagesInfiniteQuery({
+    chatRoomId: selectedChatRoom.id,
+    lastMessageId: null,
+  });
+
+  useEffect(() => {
+    setMessages([]);
+    setTypingUsers({});
+    setInput('');
+  }, [selectedChatRoom]);
+
+  useEffect(() => {
+    if (!data) return;
+    if (data?.pages?.length) {
+      const allMessages = data.pages.flatMap((page) => page.content);
+      setMessages(allMessages);
+    }
+  }, [data]);
+
   const handleSendChatMessage = (message: ChatMessageReceivedEvent) => {
     setMessages((prev) => [...prev, message]);
   };
+
   const handleTypingStatus = ({
     isTyping,
     sender,
   }: TypingStatusChangedEvent) => {
-    const { senderId, username } = sender;
+    const { id, username } = sender;
 
     if (isTyping) {
       setTypingUsers((prev) => ({
         ...prev,
-        [senderId]: username,
+        [id]: username,
       }));
-      return;
+    } else {
+      setTypingUsers((prev) => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
+      });
     }
-
-    setTypingUsers((prev) => {
-      const updated = { ...prev };
-      delete updated[senderId];
-      return updated;
-    });
   };
 
   const { sendChatMessage } = useChatMessageSocket(
@@ -58,23 +78,12 @@ const ChatRoomView = ({ selectedChatRoom }: ChatRoomViewProps) => {
     setInput('');
   };
 
-  useEffect(() => {
-    setMessages([]);
-    setTypingUsers({});
-    setInput('');
-  }, [selectedChatRoom]);
-
   useUpdateEffect(() => {
     if (input) {
       sendTypingStatus({ chatRoomId: selectedChatRoom.id, isTyping: true });
-      const timeout = setTimeout(
-        () =>
-          sendTypingStatus({
-            chatRoomId: selectedChatRoom.id,
-            isTyping: false,
-          }),
-        500
-      );
+      const timeout = setTimeout(() => {
+        sendTypingStatus({ chatRoomId: selectedChatRoom.id, isTyping: false });
+      }, 500);
       return () => clearTimeout(timeout);
     } else {
       sendTypingStatus({ chatRoomId: selectedChatRoom.id, isTyping: false });

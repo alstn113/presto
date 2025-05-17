@@ -19,7 +19,7 @@ export interface ChatMessageReceivedEvent {
   content: string;
   messageType: MessageType;
   sender: {
-    senderId: string;
+    id: string;
     username: string;
   };
   sentAt: string;
@@ -38,7 +38,7 @@ export interface JoinedChatRoomPreviewUpdatedEvent {
 export interface TypingStatusChangedEvent {
   chatRoomId: string;
   sender: {
-    senderId: string;
+    id: string;
     username: string;
   };
   isTyping: boolean;
