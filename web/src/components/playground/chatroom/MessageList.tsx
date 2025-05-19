@@ -1,13 +1,25 @@
 import type { ChatMessageReceivedEvent } from '../../../hooks/socket/types';
 import { formatRelativeDate } from '../../../libs/utils/dateUtils';
 import useChatRoomParticipantInfo from '../../../hooks/chat/useChatRoomParticipantInfo';
+import { useEffect, useRef } from 'react';
 
-interface Props {
+interface MessageListProps {
   messages: ChatMessageReceivedEvent[];
+  topRef: React.RefObject<HTMLDivElement | null>;
+  bottomRef: React.RefObject<HTMLDivElement | null>;
+  isFetchingPreviousPage: boolean;
+  isFetchingNextPage: boolean;
 }
 
-const MessageList = ({ messages }: Props) => {
+const MessageList = ({ messages, topRef, bottomRef }: MessageListProps) => {
   const { getParticipantById } = useChatRoomParticipantInfo();
+  const listRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    if (!listRef.current) return;
+    listRef.current.scrollTop = listRef.current.scrollHeight;
+  }, [messages]);
+
   const renderMessage = (msg: ChatMessageReceivedEvent) => {
     const time = formatRelativeDate(msg.sentAt);
     const username = getParticipantById(msg.senderId)?.username;
@@ -50,8 +62,15 @@ const MessageList = ({ messages }: Props) => {
   };
 
   return (
-    <ul className="min-h-[400px] max-h-[300px] overflow-y-auto border border-gray-300 rounded p-4 mb-4 space-y-2 bg-gray-50">
-      {messages.map((msg) => renderMessage(msg))}
+    <ul
+      ref={listRef}
+      className="min-h-[400px] max-h-[400px] overflow-y-auto border border-gray-300 rounded p-4 mb-4 space-y-2 bg-gray-50"
+    >
+      <div ref={topRef} className="text-center text-gray-500 py-2" />
+
+      {[...messages].map((msg) => renderMessage(msg))}
+
+      <div ref={bottomRef} className="text-center text-gray-500 py-2" />
     </ul>
   );
 };

@@ -11,6 +11,7 @@ import MessageInput from './MessageInput';
 import useUpdateEffect from '../../../hooks/useUpdateEffect';
 import useChatMessagesCursorInfiniteQuery from '../../../hooks/chat/useChatMessagesCursorInfiniteQuery';
 import useGetChatRoomOverview from '../../../hooks/chat/useGetChatRoomOverview';
+import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
 
 interface ChatRoomViewProps {
   selectedChatRoom: { id: string; name: string };
@@ -25,7 +26,15 @@ const ChatRoomView = ({ selectedChatRoom }: ChatRoomViewProps) => {
     chatRoomId: selectedChatRoom.id,
   });
 
-  const { data } = useChatMessagesCursorInfiniteQuery({
+  const {
+    data,
+    isFetchingPreviousPage,
+    isFetchingNextPage,
+    fetchPreviousPage,
+    fetchNextPage,
+    hasPreviousPage,
+    hasNextPage,
+  } = useChatMessagesCursorInfiniteQuery({
     chatRoomId: selectedChatRoom.id,
     initialData: {
       messages: initialData.messages,
@@ -97,12 +106,38 @@ const ChatRoomView = ({ selectedChatRoom }: ChatRoomViewProps) => {
     }
   }, [input]);
 
+  const topRef = useIntersectionObserver({
+    onIntersect: () => {
+      if (hasPreviousPage && !isFetchingPreviousPage) {
+        console.log('Fetching previous page...');
+        fetchPreviousPage();
+      }
+    },
+    threshold: 0.5,
+  });
+
+  const bottomRef = useIntersectionObserver({
+    onIntersect: () => {
+      if (hasNextPage && !isFetchingNextPage) {
+        console.log('Fetching next page...');
+        fetchNextPage();
+      }
+    },
+    threshold: 0.5,
+  });
+
   return (
     <div className="w-full mx-auto p-4 bg-white shadow rounded-lg h-full flex flex-col">
       <h2 className="text-xl font-semibold mb-4">
         채팅방 - {selectedChatRoom.name}
       </h2>
-      <MessageList messages={messages} />
+      <MessageList
+        messages={messages}
+        topRef={topRef}
+        bottomRef={bottomRef}
+        isFetchingPreviousPage={isFetchingPreviousPage}
+        isFetchingNextPage={isFetchingNextPage}
+      />
       <TypingIndicator typingUserIds={typingUserIds} />
       <MessageInput input={input} setInput={setInput} onSend={sendMessage} />
     </div>

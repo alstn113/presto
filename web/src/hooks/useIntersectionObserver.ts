@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 
 interface useIntersectionObserverProps {
   onIntersect: () => void;
@@ -8,29 +8,35 @@ interface useIntersectionObserverProps {
 const useIntersectionObserver = ({
   onIntersect,
   threshold,
-}: useIntersectionObserverProps) => {
-  const targetElement = useRef(null);
+}: useIntersectionObserverProps): RefObject<HTMLDivElement | null> => {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!targetElement || !targetElement.current) return;
+    const currentElement = ref.current;
+
+    if (!currentElement) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => entry.isIntersecting && onIntersect());
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            onIntersect();
+          }
+        });
       },
       {
         threshold: threshold || 0.5,
       }
     );
 
-    observer.observe(targetElement && targetElement.current);
+    observer.observe(currentElement);
 
     return () => {
       observer.disconnect();
     };
   }, [onIntersect, threshold]);
 
-  return targetElement;
+  return ref;
 };
 
 export default useIntersectionObserver;
