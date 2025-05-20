@@ -75,7 +75,11 @@ const useSseEventBusStore = create<States & Actions>()(
     ) => {
       const listeners = get().listeners[event];
       [...listeners].forEach((callback) => {
-        callback(payload);
+        try {
+          callback(payload);
+        } catch (error) {
+          console.error(`Error in event handler for ${event}:`, error);
+        }
       });
     },
 

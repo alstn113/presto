@@ -21,7 +21,7 @@ const PlaygroundPage = () => {
   return (
     <>
       <Navbar />
-      <div className="flex h-screen">
+      <div className="flex w-full h-[calc(100vh-60px)]">
         <Sidebar />
         {!selectedChatRoom ? (
           <div className="flex items-center justify-center w-full h-full text-gray-500">
