@@ -1,5 +1,6 @@
 package com.presto.server.domain.chat.room.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import java.time.Instant;
 
 public record JoinedChatRoomPreviewDto(
@@ -11,4 +12,8 @@ public record JoinedChatRoomPreviewDto(
         long unreadMessageCount,
         long participantCount
 ) {
+
+    @QueryProjection
+    public JoinedChatRoomPreviewDto {
+    }
 }

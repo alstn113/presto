@@ -11,7 +11,6 @@ import com.presto.server.domain.chat.room.ChatRoomParticipant;
 import com.presto.server.domain.chat.room.ChatRoomParticipantRepository;
 import com.presto.server.domain.chat.room.ChatRoomRepository;
 import com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto;
-import com.presto.server.domain.member.Member;
 import com.presto.server.domain.member.MemberRepository;
 import com.presto.server.support.error.CoreException;
 import com.presto.server.support.error.ErrorType;
@@ -70,11 +69,6 @@ public class ChatMessageService {
                     .orElseThrow(() -> new CoreException(ErrorType.CHAT_ROOM_NOT_FOUND));
             sseEmitterService.sendChatRoomPreviewUpdatedEvent(memberId, event);
         });
-    }
-
-    private Member findMemberById(String memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new CoreException(ErrorType.MEMBER_NOT_FOUND));
     }
 
     private ChatRoom findChatRoomById(String chatRoomId) {
