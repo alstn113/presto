@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type {
   ChatMessageReceivedEvent,
   TypingStatusChangedEvent,
@@ -6,12 +6,13 @@ import type {
 import useChatMessageSocket from '../../../hooks/socket/useChatMessageSocket';
 import useChatTypingStatusSocket from '../../../hooks/socket/useChatTypingStatusSocket';
 import TypingIndicator from './TypingIndicator';
-import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import useUpdateEffect from '../../../hooks/useUpdateEffect';
 import useChatMessagesCursorInfiniteQuery from '../../../hooks/chat/useChatMessagesCursorInfiniteQuery';
 import useGetChatRoomOverview from '../../../hooks/chat/useGetChatRoomOverview';
+import { formatRelativeDate } from '../../../libs/utils/dateUtils';
 import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
+import useChatRoomParticipantInfo from '../../../hooks/chat/useChatRoomParticipantInfo';
 
 interface ChatRoomViewProps {
   selectedChatRoom: { id: string; name: string };
@@ -106,14 +107,36 @@ const ChatRoomView = ({ selectedChatRoom }: ChatRoomViewProps) => {
     }
   }, [input]);
 
+  const { getParticipantById } = useChatRoomParticipantInfo();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollHeightBeforeUpdate = useRef(0);
+
+  const prepareForAppendTop = () => {
+    if (containerRef.current) {
+      scrollHeightBeforeUpdate.current = containerRef.current.scrollHeight;
+    }
+  };
+
+  useLayoutEffect(() => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const newHeight = container.scrollHeight;
+      const diff = newHeight - scrollHeightBeforeUpdate.current;
+      container.scrollTop += diff;
+    }
+  }, [messages]);
+
   const topRef = useIntersectionObserver({
     onIntersect: () => {
       if (hasPreviousPage && !isFetchingPreviousPage) {
         console.log('Fetching previous page...');
+        prepareForAppendTop();
         fetchPreviousPage();
       }
     },
+    hasNextPage: hasPreviousPage,
     threshold: 0.5,
+    delayMs: 300,
   });
 
   const bottomRef = useIntersectionObserver({
@@ -123,7 +146,9 @@ const ChatRoomView = ({ selectedChatRoom }: ChatRoomViewProps) => {
         fetchNextPage();
       }
     },
+    hasNextPage: hasNextPage,
     threshold: 0.5,
+    delayMs: 300,
   });
 
   return (
@@ -131,17 +156,71 @@ const ChatRoomView = ({ selectedChatRoom }: ChatRoomViewProps) => {
       <h2 className="text-xl font-semibold mb-4">
         채팅방 - {selectedChatRoom.name}
       </h2>
-      <MessageList
-        messages={messages}
-        topRef={topRef}
-        bottomRef={bottomRef}
-        isFetchingPreviousPage={isFetchingPreviousPage}
-        isFetchingNextPage={isFetchingNextPage}
-      />
+      <div
+        ref={containerRef}
+        className="min-h-[400px] max-h-[400px] overflow-y-auto border border-gray-300 rounded p-4 mb-4 space-y-2 bg-gray-50"
+      >
+        <div ref={topRef} />
+
+        {[...messages].map((msg) =>
+          renderMessage({
+            msg,
+            username: getParticipantById(msg.senderId)?.username || 'Unknown',
+          })
+        )}
+
+        <div ref={bottomRef} />
+      </div>
       <TypingIndicator typingUserIds={typingUserIds} />
       <MessageInput input={input} setInput={setInput} onSend={sendMessage} />
     </div>
   );
+};
+
+const renderMessage = ({
+  msg,
+  username,
+}: {
+  msg: ChatMessageReceivedEvent;
+  username: string;
+}) => {
+  const time = formatRelativeDate(msg.sentAt);
+
+  switch (msg.messageType) {
+    case 'TEXT':
+      return (
+        <li
+          key={msg.id}
+          className="p-2 rounded border border-gray-200 bg-white flex justify-between items-start"
+        >
+          <div>
+            <span className="font-bold text-blue-600">{username}:</span>
+            <span className="text-gray-800">{msg.content}</span>
+          </div>
+          <span className="text-xs text-gray-400 ml-2 whitespace-nowrap">
+            {time}
+          </span>
+        </li>
+      );
+
+    case 'SYSTEM':
+      return (
+        <li
+          key={msg.id}
+          className="text-center text-sm text-gray-500 italic py-1"
+        >
+          📢 {msg.content}
+          <span className="text-xs text-gray-400 ml-1">({time})</span>
+        </li>
+      );
+
+    default:
+      return (
+        <li key={msg.id} className="text-red-500">
+          알 수 없는 메시지 유형입니다.
+        </li>
+      );
+  }
 };
 
 export default ChatRoomView;
