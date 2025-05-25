@@ -6,7 +6,12 @@ spring:
       hibernate:
         format_sql: true
         highlight_sql: true
-
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      ssl:
+        enabled: false
 security:
   jwt:
     secret-key: security-1234567890-!@#$%^&*()-security-1234567890

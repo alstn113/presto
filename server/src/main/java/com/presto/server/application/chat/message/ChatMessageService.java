@@ -11,7 +11,6 @@ import com.presto.server.domain.chat.room.ChatRoomParticipant;
 import com.presto.server.domain.chat.room.ChatRoomParticipantRepository;
 import com.presto.server.domain.chat.room.ChatRoomRepository;
 import com.presto.server.domain.chat.room.dto.JoinedChatRoomPreviewDto;
-import com.presto.server.domain.member.MemberRepository;
 import com.presto.server.support.error.CoreException;
 import com.presto.server.support.error.ErrorType;
 import java.util.List;
@@ -27,7 +26,6 @@ public class ChatMessageService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomParticipantRepository chatRoomParticipantRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final MemberRepository memberRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final SseEmitterService sseEmitterService;
 
